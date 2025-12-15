@@ -1,0 +1,7 @@
+project_id = "iwnaoyhpppisronzgtkr"
+
+[functions.youtube-videos]
+verify_jwt = false
+
+[functions.mongodb-api]
+verify_jwt = false
