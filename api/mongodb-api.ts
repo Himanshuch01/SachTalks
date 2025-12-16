@@ -61,22 +61,32 @@ async function getDb() {
     cachedClientPromise = null;
     cachedClient = null;
     
-    // Create a new connection
-    cachedClientPromise = MongoClient.connect(mongoUri, {
-      tls: true,
-      tlsAllowInvalidCertificates: false,
-      serverSelectionTimeoutMS: 5000,
-      socketTimeoutMS: 45000,
-      connectTimeoutMS: 10000,
-      maxPoolSize: 1,
-      minPoolSize: 0,
-      maxIdleTimeMS: 30000,
-      retryWrites: true,
-      retryReads: true,
-    });
+    // Create a new connection with proper error handling
+    cachedClientPromise = (async () => {
+      try {
+        const client = await MongoClient.connect(mongoUri, {
+          tls: true,
+          tlsAllowInvalidCertificates: false,
+          serverSelectionTimeoutMS: 5000,
+          socketTimeoutMS: 45000,
+          connectTimeoutMS: 10000,
+          maxPoolSize: 1,
+          minPoolSize: 0,
+          maxIdleTimeMS: 30000,
+          retryWrites: true,
+          retryReads: true,
+        });
+        cachedClient = client;
+        return client;
+      } catch (retryError) {
+        // Reset promise on retry error so we can try again on next request
+        cachedClientPromise = null;
+        cachedClient = null;
+        throw retryError;
+      }
+    })();
     
     const client = await cachedClientPromise;
-    cachedClient = client;
     return client.db(dbName);
   }
 }
