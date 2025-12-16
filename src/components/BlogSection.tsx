@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { Calendar, ArrowRight, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -77,10 +78,12 @@ const BlogSection = () => {
               Read our in-depth articles, analysis, and opinion pieces on current affairs.
             </p>
           </div>
-          <Button variant="news" className="gap-2">
-            View All Articles
-            <ArrowRight className="w-4 h-4" />
-          </Button>
+          <Link to="/blog">
+            <Button variant="news" className="gap-2">
+              View All Articles
+              <ArrowRight className="w-4 h-4" />
+            </Button>
+          </Link>
         </div>
 
         {loading ? (
@@ -99,48 +102,49 @@ const BlogSection = () => {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {displayBlogs.map((blog, index) => (
-              <Card
-                key={blog.id}
-                className="overflow-hidden border-0 shadow-md card-hover bg-card group"
-                style={{ animationDelay: `${index * 0.1}s` }}
-              >
-                <div className="relative aspect-video overflow-hidden bg-gradient-dark">
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="font-display text-4xl font-bold text-primary-foreground/20">
-                      {blog.title.charAt(0)}
-                    </span>
-                  </div>
-                  {blog.category && (
-                    <div className="absolute top-4 left-4">
-                      <span className="news-badge">{blog.category}</span>
+              <Link key={blog.id} to={`/blog/${blog.slug}`} className="group">
+                <Card
+                  className="overflow-hidden border-0 shadow-md card-hover bg-card"
+                  style={{ animationDelay: `${index * 0.1}s` }}
+                >
+                  <div className="relative aspect-video overflow-hidden bg-gradient-dark">
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <span className="font-display text-4xl font-bold text-primary-foreground/20">
+                        {blog.title.charAt(0)}
+                      </span>
                     </div>
-                  )}
-                </div>
-                <CardContent className="p-6">
-                  <div className="flex items-center gap-4 text-sm text-muted-foreground mb-3">
-                    <span className="flex items-center gap-1">
-                      <Calendar className="w-3 h-3" />
-                      {formatDate(blog.created_at)}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <User className="w-3 h-3" />
-                      Sach Talk
-                    </span>
+                    {blog.category && (
+                      <div className="absolute top-4 left-4">
+                        <span className="news-badge">{blog.category}</span>
+                      </div>
+                    )}
                   </div>
-                  <h3 className="font-display text-xl font-bold text-foreground mb-2 line-clamp-2 group-hover:text-primary transition-colors">
-                    {blog.title}
-                  </h3>
-                  {blog.excerpt && (
-                    <p className="text-muted-foreground line-clamp-2 mb-4">
-                      {blog.excerpt}
-                    </p>
-                  )}
-                  <Button variant="link" className="p-0 h-auto text-primary gap-1 group-hover:gap-2 transition-all">
-                    Read More
-                    <ArrowRight className="w-4 h-4" />
-                  </Button>
-                </CardContent>
-              </Card>
+                  <CardContent className="p-6">
+                    <div className="flex items-center gap-4 text-sm text-muted-foreground mb-3">
+                      <span className="flex items-center gap-1">
+                        <Calendar className="w-3 h-3" />
+                        {formatDate(blog.created_at)}
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <User className="w-3 h-3" />
+                        Sach Talk
+                      </span>
+                    </div>
+                    <h3 className="font-display text-xl font-bold text-foreground mb-2 line-clamp-2 group-hover:text-primary transition-colors">
+                      {blog.title}
+                    </h3>
+                    {blog.excerpt && (
+                      <p className="text-muted-foreground line-clamp-2 mb-4">
+                        {blog.excerpt}
+                      </p>
+                    )}
+                    <span className="inline-flex items-center gap-1 text-primary font-medium text-sm group-hover:gap-2 transition-all">
+                      Read More
+                      <ArrowRight className="w-4 h-4" />
+                    </span>
+                  </CardContent>
+                </Card>
+              </Link>
             ))}
           </div>
         )}
