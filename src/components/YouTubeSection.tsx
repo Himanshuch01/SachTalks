@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
 import { ExternalLink, Play, Clock, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
-const CHANNEL_ID = "UCQTJfE6cW4s3qVGg9UJiK5g"; // Sach Talks Official channel ID
+// Sach Talks Official channel uploads playlist (UU + channel ID without the leading C)
+const UPLOADS_PLAYLIST_ID = "UUQTJfE6cW4s3qVGg9UJiK5g";
 
 // Featured videos - currently static placeholders
 const featuredVideos = [
@@ -58,54 +58,6 @@ const featuredVideos = [
 ];
 
 const YouTubeSection = () => {
-  const [latestVideoId, setLatestVideoId] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchLatestVideo = async () => {
-      try {
-        const apiKey = import.meta.env.VITE_YOUTUBE_API_KEY as
-          | string
-          | undefined;
-
-        if (!apiKey) {
-          console.warn("VITE_YOUTUBE_API_KEY is not configured");
-          return;
-        }
-
-        // Get channel details to find the uploads playlist
-        const channelRes = await fetch(
-          `https://www.googleapis.com/youtube/v3/channels?part=contentDetails&id=${CHANNEL_ID}&key=${apiKey}`
-        );
-        const channelData = await channelRes.json();
-
-        const uploadsPlaylistId =
-          channelData.items?.[0]?.contentDetails?.relatedPlaylists?.uploads;
-
-        if (!uploadsPlaylistId) {
-          console.warn("Channel uploads playlist not found");
-          return;
-        }
-
-        // Get just the first video from the uploads playlist
-        const videosRes = await fetch(
-          `https://www.googleapis.com/youtube/v3/playlistItems?part=contentDetails&playlistId=${uploadsPlaylistId}&maxResults=1&key=${apiKey}`
-        );
-        const videosData = await videosRes.json();
-
-        const firstId =
-          videosData.items?.[0]?.contentDetails?.videoId ?? null;
-
-        if (firstId) {
-          setLatestVideoId(firstId);
-        }
-      } catch (error) {
-        console.error("Error fetching latest YouTube video:", error);
-      }
-    };
-
-    fetchLatestVideo();
-  }, []);
-
   return (
     <section id="videos" className="section-padding bg-background">
       <div className="container-wide mx-auto">
@@ -132,22 +84,16 @@ const YouTubeSection = () => {
           </a>
         </div>
 
-        {/* Embedded Latest Channel Video */}
+        {/* Embedded Channel Uploads Playlist - no API key required */}
         <div className="mb-12">
-          <div className="aspect-video w-full max-w-4xl mx-auto rounded-lg overflow-hidden shadow-lg flex items-center justify-center bg-black">
-            {latestVideoId ? (
-              <iframe
-                src={`https://www.youtube.com/embed/${latestVideoId}`}
-                title="Sach Talk Latest Video"
-                className="w-full h-full"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              />
-            ) : (
-              <div className="text-muted-foreground text-sm md:text-base px-4 text-center">
-                Latest video will appear here once loaded.
-              </div>
-            )}
+          <div className="aspect-video w-full max-w-4xl mx-auto rounded-lg overflow-hidden shadow-lg">
+            <iframe
+              src={`https://www.youtube.com/embed/videoseries?list=${UPLOADS_PLAYLIST_ID}`}
+              title="Sach Talk Latest Videos"
+              className="w-full h-full"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
           </div>
         </div>
 
