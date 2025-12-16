@@ -1,0 +1,16 @@
+{
+  "//": "Vercel routing configuration for the Vite SPA.",
+  "//_note": "Ensure client-side routes like /admin, /blog/:slug, etc. keep working on reload while preserving /api/* serverless functions.",
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/$1"
+    },
+    {
+      "source": "/((?!api).*)",
+      "destination": "/"
+    }
+  ]
+}
+
+
