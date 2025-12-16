@@ -87,7 +87,16 @@ const YouTubeSection = () => {
         <div className="mb-12">
           <div className="aspect-video w-full max-w-4xl mx-auto rounded-lg overflow-hidden shadow-lg">
             <iframe
-              src="https://www.youtube.com/embed?listType=user_uploads&list=SachTalksOfficial"
+              // Use the channel's uploads playlist rather than the legacy
+              // user_uploads syntax, which no longer works reliably for
+              // channels identified only by handle.
+              //
+              // For a channel ID that starts with "UC", the uploads
+              // playlist ID is the same ID but with "UC" replaced by "UU".
+              // Example:
+              //   Channel ID:  UCQTJfE6cW4s3qVGg9UJiK5g
+              //   Uploads ID:  UUQTJfE6cW4s3qVGg9UJiK5g
+              src="https://www.youtube.com/embed/videoseries?list=UUQTJfE6cW4s3qVGg9UJiK5g"
               title="Sach Talk Latest Video"
               className="w-full h-full"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

@@ -169,7 +169,9 @@ const VideosPage = () => {
             </h2>
             <div className="aspect-video w-full max-w-5xl mx-auto rounded-xl overflow-hidden shadow-2xl border border-border">
               <iframe
-                src="https://www.youtube.com/embed?listType=user_uploads&list=SachTalksOfficial"
+                // Use uploads playlist for the Sach Talk channel.
+                // See matching explanation in `YouTubeSection.tsx`.
+                src="https://www.youtube.com/embed/videoseries?list=UUQTJfE6cW4s3qVGg9UJiK5g"
                 title="Sach Talk Latest Video"
                 className="w-full h-full"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
