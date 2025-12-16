@@ -16,6 +16,7 @@ if (!dbName) {
 
 // In a serverless environment, we cache the client on the global object so
 // subsequent invocations reuse the same connection instead of opening new ones.
+let cachedClient: MongoClient | null = null;
 let cachedClientPromise: Promise<MongoClient> | null = null;
 
 async function getDb() {
@@ -23,12 +24,61 @@ async function getDb() {
     throw new Error("MONGODB_URI or DB_NAME is not configured");
   }
 
+  // If no cached client, create a new one
   if (!cachedClientPromise) {
-    cachedClientPromise = MongoClient.connect(mongoUri);
+    cachedClientPromise = (async () => {
+      try {
+        // Configure MongoDB client with proper TLS/SSL options for serverless environments
+        const client = await MongoClient.connect(mongoUri, {
+          tls: true,
+          tlsAllowInvalidCertificates: false,
+          serverSelectionTimeoutMS: 5000,
+          socketTimeoutMS: 45000,
+          connectTimeoutMS: 10000,
+          maxPoolSize: 1, // Important for serverless: limit connection pool
+          minPoolSize: 0,
+          maxIdleTimeMS: 30000,
+          retryWrites: true,
+          retryReads: true,
+        });
+        cachedClient = client;
+        return client;
+      } catch (error) {
+        // Reset promise on error so we can retry
+        cachedClientPromise = null;
+        cachedClient = null;
+        throw error;
+      }
+    })();
   }
 
-  const client = await cachedClientPromise;
-  return client.db(dbName);
+  try {
+    const client = await cachedClientPromise;
+    // Try to access the database to verify connection is still alive
+    return client.db(dbName);
+  } catch (error) {
+    // Connection failed, reset and retry once
+    cachedClientPromise = null;
+    cachedClient = null;
+    
+    // Create a new connection
+    cachedClientPromise = MongoClient.connect(mongoUri, {
+      tls: true,
+      tlsAllowInvalidCertificates: false,
+      serverSelectionTimeoutMS: 5000,
+      socketTimeoutMS: 45000,
+      connectTimeoutMS: 10000,
+      maxPoolSize: 1,
+      minPoolSize: 0,
+      maxIdleTimeMS: 30000,
+      retryWrites: true,
+      retryReads: true,
+    });
+    
+    const client = await cachedClientPromise;
+    cachedClient = client;
+    return client.db(dbName);
+  }
 }
 
 interface MongoRequestBody {
@@ -113,9 +163,20 @@ export default async function handler(req: any, res: any) {
     });
   } catch (error: any) {
     console.error("MongoDB API error:", error);
+    
+    // Reset cached connection on error to force reconnection on next request
+    cachedClientPromise = null;
+    cachedClient = null;
+    
+    // Provide more helpful error messages
+    let errorMessage = error?.message || "Internal server error";
+    if (errorMessage.includes("SSL") || errorMessage.includes("TLS")) {
+      errorMessage = "MongoDB SSL/TLS connection error. Please check your MONGODB_URI connection string includes proper TLS configuration.";
+    }
+    
     return res.status(500).json({
       success: false,
-      error: error?.message || "Internal server error",
+      error: errorMessage,
     });
   }
 }
