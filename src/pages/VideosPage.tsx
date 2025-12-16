@@ -18,6 +18,7 @@ interface Video {
 
 const VideosPage = () => {
   const [videos, setVideos] = useState<Video[]>([]);
+  const [featuredVideoId, setFeaturedVideoId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -118,6 +119,7 @@ const VideosPage = () => {
       });
 
       setVideos(mapped);
+      setFeaturedVideoId(mapped[0]?.id ?? null);
     } catch (err) {
       console.error("Error fetching videos:", err);
       setError("Failed to load videos. Please try again later.");
@@ -167,16 +169,20 @@ const VideosPage = () => {
             <h2 className="font-display text-2xl md:text-3xl font-bold text-foreground mb-8">
               Latest Video
             </h2>
-            <div className="aspect-video w-full max-w-5xl mx-auto rounded-xl overflow-hidden shadow-2xl border border-border">
-              <iframe
-                // Use uploads playlist for the Sach Talk channel.
-                // See matching explanation in `YouTubeSection.tsx`.
-                src="https://www.youtube.com/embed/videoseries?list=UUQTJfE6cW4s3qVGg9UJiK5g"
-                title="Sach Talk Latest Video"
-                className="w-full h-full"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              />
+            <div className="aspect-video w-full max-w-5xl mx-auto rounded-xl overflow-hidden shadow-2xl border border-border flex items-center justify-center bg-black">
+              {featuredVideoId ? (
+                <iframe
+                  src={`https://www.youtube.com/embed/${featuredVideoId}`}
+                  title="Sach Talk Latest Video"
+                  className="w-full h-full"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                />
+              ) : (
+                <div className="text-muted-foreground text-sm md:text-base px-4 text-center">
+                  Latest video will appear here once loaded.
+                </div>
+              )}
             </div>
           </div>
         </section>
