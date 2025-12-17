@@ -16,6 +16,22 @@ interface Video {
   date: string;
 }
 
+// Shape of the server-side YouTube API response
+interface ApiVideo {
+  videoId: string;
+  title: string;
+  description: string;
+  thumbnail: string;
+  publishedAt: string;
+  duration?: string; // ISO 8601
+  viewCount?: string;
+}
+
+interface ApiResponse {
+  videos?: ApiVideo[];
+  error?: string;
+}
+
 const VideosPage = () => {
   const [videos, setVideos] = useState<Video[]>([]);
   const [featuredVideoId, setFeaturedVideoId] = useState<string | null>(null);
@@ -28,54 +44,54 @@ const VideosPage = () => {
 
   const fetchVideos = async () => {
     try {
-      const apiKey = import.meta.env.VITE_YOUTUBE_API_KEY as string | undefined;
-      const channelId = "UCQTJfE6cW4s3qVGg9UJiK5g";
+      setLoading(true);
+      setError(null);
 
-      if (!apiKey) {
-        throw new Error("VITE_YOUTUBE_API_KEY is not configured");
+      const res = await fetch("/api/youtube");
+
+      const contentType = res.headers.get("content-type") || "";
+      const isJson = contentType.toLowerCase().includes("application/json");
+
+      // If response is not JSON (e.g. HTML error page), avoid calling res.json()
+      if (!isJson) {
+        const text = await res.text().catch(() => "");
+        console.error("Non-JSON response from /api/youtube:", text);
+        throw new Error(
+          "Server returned an unexpected response for videos. Please check that the /api/youtube route is deployed and returning JSON."
+        );
       }
 
-      const channelRes = await fetch(
-        `https://www.googleapis.com/youtube/v3/channels?part=contentDetails&id=${channelId}&key=${apiKey}`
-      );
-      const channelData = await channelRes.json();
-
-      const uploadsPlaylistId =
-        channelData.items?.[0]?.contentDetails?.relatedPlaylists?.uploads;
-
-      if (!uploadsPlaylistId) {
-        throw new Error("Channel uploads playlist not found");
+      if (!res.ok) {
+        const data = (await res.json().catch(() => null)) as ApiResponse | null;
+        const message =
+          data?.error ??
+          `Failed to load videos from server (HTTP ${res.status}).`;
+        throw new Error(message);
       }
 
-      const videosRes = await fetch(
-        `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet,contentDetails&playlistId=${uploadsPlaylistId}&maxResults=12&key=${apiKey}`
-      );
-      const videosData = await videosRes.json();
+      // Safe: server indicated JSON and status OK.
+      const data = (await res.json()) as ApiResponse;
 
-      if (!videosData.items) {
+      if (data.error) {
+        throw new Error(data.error);
+      }
+
+      const apiVideos = data.videos ?? [];
+
+      if (!apiVideos.length) {
         setVideos([]);
+        setFeaturedVideoId(null);
         return;
       }
 
-      const videoIds = videosData.items
-        .map((item: any) => item.contentDetails.videoId)
-        .join(",");
+      const mapped: Video[] = apiVideos.map((video) => {
+        const isoDuration = video.duration ?? "PT0S";
 
-      const statsRes = await fetch(
-        `https://www.googleapis.com/youtube/v3/videos?part=statistics,contentDetails&id=${videoIds}&key=${apiKey}`
-      );
-      const statsData = await statsRes.json();
-
-      const mapped: Video[] = videosData.items.map((item: any) => {
-        const stats = statsData.items?.find(
-          (s: any) => s.id === item.contentDetails.videoId
-        );
-        const duration = stats?.contentDetails?.duration || "PT0S";
-
-        const match = duration.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
-        const hours = parseInt(match?.[1] || "0");
-        const minutes = parseInt(match?.[2] || "0");
-        const seconds = parseInt(match?.[3] || "0");
+        // Parse ISO 8601 duration format (PT1H2M3S)
+        const match = isoDuration.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
+        const hours = parseInt(match?.[1] || "0", 10);
+        const minutes = parseInt(match?.[2] || "0", 10);
+        const seconds = parseInt(match?.[3] || "0", 10);
         const formattedDuration =
           hours > 0
             ? `${hours}:${minutes.toString().padStart(2, "0")}:${seconds
@@ -83,17 +99,20 @@ const VideosPage = () => {
                 .padStart(2, "0")}`
             : `${minutes}:${seconds.toString().padStart(2, "0")}`;
 
-        const viewCount = parseInt(stats?.statistics?.viewCount || "0");
+        // Format view count if available
+        const rawViewCount = video.viewCount ?? "0";
+        const viewCount = parseInt(rawViewCount, 10) || 0;
         const formattedViews =
-          viewCount >= 1000000
-            ? `${(viewCount / 1000000).toFixed(1)}M`
-            : viewCount >= 1000
-            ? `${(viewCount / 1000).toFixed(0)}K`
+          viewCount >= 1_000_000
+            ? `${(viewCount / 1_000_000).toFixed(1)}M`
+            : viewCount >= 1_000
+            ? `${(viewCount / 1_000).toFixed(0)}K`
             : viewCount.toString();
 
-        const publishedAt = new Date(item.snippet.publishedAt);
+        // Format relative date from publishedAt
+        const publishedAtDate = new Date(video.publishedAt);
         const now = new Date();
-        const diffTime = Math.abs(now.getTime() - publishedAt.getTime());
+        const diffTime = Math.abs(now.getTime() - publishedAtDate.getTime());
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
         let formattedDate = "";
         if (diffDays < 1) formattedDate = "Today";
@@ -106,12 +125,9 @@ const VideosPage = () => {
         else formattedDate = `${Math.floor(diffDays / 365)} years ago`;
 
         return {
-          id: item.contentDetails.videoId,
-          title: item.snippet.title,
-          thumbnail:
-            item.snippet.thumbnails.maxres?.url ||
-            item.snippet.thumbnails.high?.url ||
-            item.snippet.thumbnails.medium?.url,
+          id: video.videoId,
+          title: video.title,
+          thumbnail: video.thumbnail,
           views: formattedViews,
           duration: formattedDuration,
           date: formattedDate,
@@ -119,10 +135,22 @@ const VideosPage = () => {
       });
 
       setVideos(mapped);
-      setFeaturedVideoId(mapped[0]?.id ?? null);
+
+      const firstVideoId = mapped[0]?.id;
+      if (firstVideoId && firstVideoId.trim() !== "") {
+        setFeaturedVideoId(firstVideoId);
+      } else {
+        setFeaturedVideoId(null);
+      }
     } catch (err) {
       console.error("Error fetching videos:", err);
-      setError("Failed to load videos. Please try again later.");
+      const errorMessage =
+        err instanceof Error
+          ? err.message
+          : "Failed to load videos. Please try again later.";
+      setError(errorMessage);
+      setVideos([]);
+      setFeaturedVideoId(null);
     } finally {
       setLoading(false);
     }

@@ -39,10 +39,48 @@ const Admin = () => {
     setIsAdmin(stored === "true");
     setLoading(false);
   }, []);
+
+  // Load blogs when admin is authenticated
   useEffect(() => {
     if (isAdmin) {
       fetchBlogs();
     }
+  }, [isAdmin]);
+
+  // Auto-logout admin after 5 minutes of inactivity
+  useEffect(() => {
+    if (!isAdmin) return;
+
+    const INACTIVITY_LIMIT = 5 * 60 * 1000; // 5 minutes
+    let timeoutId: number | null = null;
+
+    const resetTimer = () => {
+      if (timeoutId !== null) {
+        window.clearTimeout(timeoutId);
+      }
+      timeoutId = window.setTimeout(() => {
+        toast({
+          title: "Session expired",
+          description: "You were logged out due to inactivity.",
+        });
+        handleSignOut();
+      }, INACTIVITY_LIMIT);
+    };
+
+    // User activity events
+    const events = ["mousemove", "keydown", "click", "scroll", "touchstart"];
+    events.forEach((event) => window.addEventListener(event, resetTimer));
+
+    // Start initial timer
+    resetTimer();
+
+    // Cleanup on unmount or when admin logs out
+    return () => {
+      if (timeoutId !== null) {
+        window.clearTimeout(timeoutId);
+      }
+      events.forEach((event) => window.removeEventListener(event, resetTimer));
+    };
   }, [isAdmin]);
 
   const fetchBlogs = async () => {
@@ -171,16 +209,19 @@ const Admin = () => {
     if (!confirm("Are you sure you want to delete this blog?")) return;
 
     try {
-      await deleteBlog(id);
+      // Instead of hard-deleting from the database (which is currently unreliable),
+      // mark the blog as unpublished so it no longer appears on the website.
+      await updateBlog(id, { published: false });
       toast({
         title: "Success",
-        description: "Blog deleted successfully",
+        description: "Blog removed from website successfully",
       });
+      // Refresh the list so status updates in the admin panel
       fetchBlogs();
     } catch (error) {
       toast({
         title: "Error",
-        description: "Failed to delete blog",
+        description: "Failed to remove blog",
         variant: "destructive",
       });
     }
