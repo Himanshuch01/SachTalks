@@ -108,8 +108,8 @@ const ContactPage = () => {
   return (
     <>
       <Helmet>
-        <title>Contact Us - Sach Talk | Get in Touch</title>
-        <meta name="description" content="Contact Sach Talk for news tips, feedback, or inquiries. Visit our office in Patna, Bihar or reach out through our contact form." />
+        <title>Contact Us - SACH TALKS | Get in Touch</title>
+        <meta name="description" content="Contact SACH TALKS for news tips, feedback, or inquiries. Visit our office in Patna, Bihar or reach out through our contact form." />
       </Helmet>
 
       <Header />
@@ -171,14 +171,14 @@ const ContactPage = () => {
                     allowFullScreen
                     loading="lazy"
                     referrerPolicy="no-referrer-when-downgrade"
-                    title="Sach Talk Office Location"
+                    title="SACH TALKS Office Location"
                   />
                 </div>
                 <div className="mt-6 p-4 bg-card rounded-lg border border-border">
                   <div className="flex items-start gap-3">
                     <MapPin className="w-5 h-5 text-primary mt-1 flex-shrink-0" />
                     <div>
-                      <p className="font-medium text-foreground">Sach Talk Office</p>
+                      <p className="font-medium text-foreground">SACH TALKS Office</p>
                       <p className="text-sm text-muted-foreground">
                         1st Floor, Ramdiri House, Dadiji Lane, Boring Road, Patna, Bihar 800001
                       </p>
@@ -300,7 +300,7 @@ const ContactPage = () => {
                   answer: "Yes, our office is open for visitors during working hours (Monday-Saturday, 9 AM - 8 PM). Please call ahead to schedule an appointment.",
                 },
                 {
-                  question: "How can I advertise on Sach Talk?",
+                  question: "How can I advertise on SACH TALKS?",
                   answer: "For advertising inquiries, please email advertising@sachtalk.com with your requirements. Our team will get back to you with available options.",
                 },
                 {

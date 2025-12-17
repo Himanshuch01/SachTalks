@@ -63,8 +63,8 @@ const BlogPage = () => {
   return (
     <>
       <Helmet>
-        <title>Blog - Sach Talk | Latest News Articles & Analysis</title>
-        <meta name="description" content="Read the latest news articles, analysis, and opinion pieces from Sach Talk. Stay informed with in-depth coverage on politics, economy, and more." />
+        <title>Blog - SACH TALKS | Latest News Articles & Analysis</title>
+        <meta name="description" content="Read the latest news articles, analysis, and opinion pieces from SACH TALKS. Stay informed with in-depth coverage on politics, economy, and more." />
       </Helmet>
 
       <Header />
@@ -191,7 +191,7 @@ const BlogPage = () => {
                           </span>
                           <span className="flex items-center gap-1">
                             <User className="w-3 h-3" />
-                            Sach Talk
+                            SACH TALKS
                           </span>
                         </div>
                         <h3 className="font-display text-lg font-bold text-foreground mb-2 line-clamp-2 group-hover:text-primary transition-colors">

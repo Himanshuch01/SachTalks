@@ -126,8 +126,8 @@ const BlogSection = () => {
                         {formatDate(blog.created_at)}
                       </span>
                       <span className="flex items-center gap-1">
-                        <User className="w-3 h-3" />
-                        Sach Talk
+                    <User className="w-3 h-3" />
+                    SACH TALKS
                       </span>
                     </div>
                     <h3 className="font-display text-xl font-bold text-foreground mb-2 line-clamp-2 group-hover:text-primary transition-colors">

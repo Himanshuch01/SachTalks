@@ -106,7 +106,7 @@ const BlogDetailPage = () => {
   return (
     <>
       <Helmet>
-        <title>{blog.title} - Sach Talk</title>
+        <title>{blog.title} - SACH TALKS</title>
         <meta name="description" content={blog.excerpt || blog.title} />
         <meta property="og:title" content={blog.title} />
         <meta property="og:description" content={blog.excerpt || blog.title} />
@@ -145,7 +145,7 @@ const BlogDetailPage = () => {
               </span>
               <span className="flex items-center gap-2">
                 <User className="w-4 h-4" />
-                Sach Talk Team
+                SACH TALKS Team
               </span>
               <Button
                 variant="ghost"
@@ -184,7 +184,7 @@ const BlogDetailPage = () => {
           {/* CTA */}
           <div className="max-w-4xl mt-12 p-8 bg-muted rounded-xl text-center">
             <h3 className="font-display text-xl font-bold text-foreground mb-2">
-              Stay Updated with Sach Talk
+              Stay Updated with SACH TALKS
             </h3>
             <p className="text-muted-foreground mb-4">
               Subscribe to our YouTube channel for daily news updates and analysis.

@@ -8,21 +8,21 @@ const teamMembers = [
     name: "Amit Kumar",
     role: "Founder & Editor-in-Chief",
     image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face",
-    description: "Amit Kumar is the visionary behind Sach Talk. With over 15 years of experience in journalism, he founded Sach Talk with a mission to deliver unbiased, factual news to the masses. His dedication to truth and transparency has made Sach Talk a trusted name in Hindi news media.",
+    description: "Amit Kumar is the visionary behind SACH TALKS. With over 15 years of experience in journalism, he founded SACH TALKS with a mission to deliver unbiased, factual news to the masses. His dedication to truth and transparency has made SACH TALKS a trusted name in Hindi news media.",
     quote: "Truth is the foundation of democracy.",
   },
   {
     name: "Priya Sharma",
     role: "Co-Founder & Managing Director",
     image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop&crop=face",
-    description: "Priya Sharma brings her expertise in media management and digital strategy to Sach Talk. She oversees the operational aspects of the organization and ensures that the team maintains the highest standards of journalistic integrity.",
+    description: "Priya Sharma brings her expertise in media management and digital strategy to SACH TALKS. She oversees the operational aspects of the organization and ensures that the team maintains the highest standards of journalistic integrity.",
     quote: "Empowering people with information.",
   },
   {
     name: "Rajesh Verma",
     role: "General Manager & Head of Operations",
     image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop&crop=face",
-    description: "Rajesh Verma manages the day-to-day operations of Sach Talk. With his extensive background in media production and team management, he ensures smooth functioning of all departments and timely delivery of news content.",
+    description: "Rajesh Verma manages the day-to-day operations of SACH TALKS. With his extensive background in media production and team management, he ensures smooth functioning of all departments and timely delivery of news content.",
     quote: "Excellence in every story we tell.",
   },
 ];
@@ -54,8 +54,8 @@ const AboutPage = () => {
   return (
     <>
       <Helmet>
-        <title>About Us - Sach Talk | Truth First News</title>
-        <meta name="description" content="Learn about Sach Talk, our mission, vision, and the team behind India's trusted Hindi news channel." />
+        <title>About Us - SACH TALKS | Truth First News</title>
+        <meta name="description" content="Learn about SACH TALKS, our mission, vision, and the team behind India's trusted Hindi news channel." />
       </Helmet>
 
       <Header />
@@ -71,7 +71,7 @@ const AboutPage = () => {
               The Voice of Truth
             </h1>
             <p className="text-lg md:text-xl text-primary-foreground/80 max-w-3xl mx-auto">
-              Sach Talk is committed to delivering unbiased, accurate, and impactful news that empowers the people of India.
+              SACH TALKS is committed to delivering unbiased, accurate, and impactful news that empowers the people of India.
             </p>
           </div>
         </section>
@@ -86,7 +86,7 @@ const AboutPage = () => {
                   सत्य की आवाज़, जनता की ताकत
                 </h2>
                 <p className="text-muted-foreground text-lg mb-6">
-                  At Sach Talk, we believe that truth is the cornerstone of a healthy democracy. Our mission is to provide accurate, unbiased, and timely news coverage that empowers citizens to make informed decisions.
+                  At SACH TALKS, we believe that truth is the cornerstone of a healthy democracy. Our mission is to provide accurate, unbiased, and timely news coverage that empowers citizens to make informed decisions.
                 </p>
                 <p className="text-muted-foreground">
                   Founded with the vision of becoming India's most trusted Hindi news platform, we are dedicated to investigative journalism, ground-level reporting, and bringing stories that matter to the forefront.
@@ -117,7 +117,7 @@ const AboutPage = () => {
                 Meet Our Team
               </h2>
               <p className="text-muted-foreground mt-4 max-w-2xl mx-auto">
-                The dedicated professionals behind Sach Talk who work tirelessly to bring you the truth.
+                The dedicated professionals behind SACH TALKS who work tirelessly to bring you the truth.
               </p>
             </div>
 
@@ -185,7 +185,7 @@ const AboutPage = () => {
             <div className="text-center mb-16">
               <span className="news-badge mb-4">Our Journey</span>
               <h2 className="font-display text-3xl md:text-5xl font-bold text-foreground mt-4">
-                The Story of Sach Talk
+                The Story of SACH TALKS
               </h2>
             </div>
 
@@ -199,7 +199,7 @@ const AboutPage = () => {
                   {
                     year: "2019",
                     title: "The Beginning",
-                    description: "Sach Talk was founded with a vision to provide unbiased Hindi news coverage to millions of Indians.",
+                    description: "SACH TALKS was founded with a vision to provide unbiased Hindi news coverage to millions of Indians.",
                     icon: Star,
                   },
                   {
@@ -292,7 +292,7 @@ const AboutPage = () => {
           <div className="container-wide mx-auto">
             <div className="grid lg:grid-cols-2 gap-12 items-center">
               <div>
-                <span className="news-badge mb-4">Why Sach Talk</span>
+                <span className="news-badge mb-4">Why SACH TALKS</span>
                 <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground mt-4 mb-6">
                   Why Millions Trust Us
                 </h2>

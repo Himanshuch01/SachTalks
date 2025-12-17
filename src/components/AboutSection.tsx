@@ -36,13 +36,13 @@ const AboutSection = () => {
             </h2>
             <div className="space-y-4 text-muted-foreground">
               <p>
-                <strong className="text-foreground">Sach Talk</strong> (सच टॉक) is a leading Hindi news channel dedicated to delivering unbiased, factual reporting on current affairs, politics, economy, and social issues.
+              <strong className="text-foreground">SACH TALKS</strong> (सच टॉक) is a leading Hindi news channel dedicated to delivering unbiased, factual reporting on current affairs, politics, economy, and social issues.
               </p>
               <p>
                 Founded with the mission to bring truth to millions, we believe that every citizen deserves access to accurate information. Our team of experienced journalists works tirelessly to uncover stories that matter.
               </p>
               <p>
-                From breaking news to in-depth analysis, from ground reports to expert discussions - Sach Talk is your trusted partner in staying informed about the world around you.
+              From breaking news to in-depth analysis, from ground reports to expert discussions - SACH TALKS is your trusted partner in staying informed about the world around you.
               </p>
             </div>
 

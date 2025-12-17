@@ -1,4 +1,4 @@
-## Sach Talks Hub
+## SACH TALKS Hub
 
 This is a React + Vite + TypeScript project using Tailwind CSS and shadcn-ui components.
 

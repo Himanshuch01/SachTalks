@@ -7,8 +7,8 @@ const PrivacyPolicyPage = () => {
   return (
     <>
       <Helmet>
-        <title>Privacy Policy - Sach Talk | Your Data Protection</title>
-        <meta name="description" content="Read Sach Talk's privacy policy to understand how we collect, use, and protect your personal information." />
+        <title>Privacy Policy - SACH TALKS | Your Data Protection</title>
+        <meta name="description" content="Read SACH TALKS's privacy policy to understand how we collect, use, and protect your personal information." />
       </Helmet>
 
       <Header />
@@ -44,7 +44,7 @@ const PrivacyPolicyPage = () => {
                   <h2 className="font-display text-2xl font-bold text-foreground m-0">Introduction</h2>
                 </div>
                 <p className="text-muted-foreground">
-                  Sach Talk ("we", "our", or "us") operates the website and associated services. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website or use our services. Please read this privacy policy carefully. If you do not agree with the terms of this privacy policy, please do not access the site.
+                  SACH TALKS ("we", "our", or "us") operates the website and associated services. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website or use our services. Please read this privacy policy carefully. If you do not agree with the terms of this privacy policy, please do not access the site.
                 </p>
               </div>
 

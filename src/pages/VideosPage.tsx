@@ -159,8 +159,8 @@ const VideosPage = () => {
   return (
     <>
       <Helmet>
-        <title>Videos - Sach Talk | Latest News Videos</title>
-        <meta name="description" content="Watch the latest news videos, interviews, and analysis from Sach Talk. Subscribe to our YouTube channel for daily updates." />
+        <title>Videos - SACH TALKS | Latest News Videos</title>
+        <meta name="description" content="Watch the latest news videos, interviews, and analysis from SACH TALKS. Subscribe to our YouTube channel for daily updates." />
       </Helmet>
 
       <Header />
@@ -201,7 +201,7 @@ const VideosPage = () => {
               {featuredVideoId ? (
                 <iframe
                   src={`https://www.youtube.com/embed/${featuredVideoId}`}
-                  title="Sach Talk Latest Video"
+                  title="SACH TALKS Latest Video"
                   className="w-full h-full"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
@@ -327,7 +327,7 @@ const VideosPage = () => {
               Never Miss an Update
             </h2>
             <p className="text-primary-foreground/80 mb-8 max-w-2xl mx-auto">
-              Subscribe to Sach Talk on YouTube for daily news, analysis, and exclusive interviews. Join our growing community of informed viewers.
+              Subscribe to SACH TALKS on YouTube for daily news, analysis, and exclusive interviews. Join our growing community of informed viewers.
             </p>
             <a
               href="https://www.youtube.com/@SachTalksOfficial?sub_confirmation=1"

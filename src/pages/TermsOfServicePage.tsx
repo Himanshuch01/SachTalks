@@ -7,8 +7,8 @@ const TermsOfServicePage = () => {
   return (
     <>
       <Helmet>
-        <title>Terms of Service - Sach Talk | Usage Agreement</title>
-        <meta name="description" content="Read Sach Talk's terms of service to understand the rules and guidelines for using our website and services." />
+        <title>Terms of Service - SACH TALKS | Usage Agreement</title>
+        <meta name="description" content="Read SACH TALKS's terms of service to understand the rules and guidelines for using our website and services." />
       </Helmet>
 
       <Header />
@@ -45,7 +45,7 @@ const TermsOfServicePage = () => {
                 </div>
                 <div className="space-y-3 text-muted-foreground">
                   <p>
-                    By accessing and using the Sach Talk website ("Site") and its services, you accept and agree to be bound by these Terms of Service and our Privacy Policy. If you do not agree to these terms, you should not use our Site.
+                    By accessing and using the SACH TALKS website ("Site") and its services, you accept and agree to be bound by these Terms of Service and our Privacy Policy. If you do not agree to these terms, you should not use our Site.
                   </p>
                   <p>
                     We reserve the right to modify these terms at any time. Your continued use of the Site after any changes indicates your acceptance of the modified terms.
@@ -92,7 +92,7 @@ const TermsOfServicePage = () => {
                   <div>
                     <h3 className="font-semibold text-foreground mb-2">Our Content</h3>
                     <p>
-                      All content on this Site, including but not limited to text, graphics, logos, images, audio clips, video clips, data compilations, and software, is the property of Sach Talk or its content suppliers and is protected by Indian and international copyright laws.
+                      All content on this Site, including but not limited to text, graphics, logos, images, audio clips, video clips, data compilations, and software, is the property of SACH TALKS or its content suppliers and is protected by Indian and international copyright laws.
                     </p>
                   </div>
                   <div>
@@ -110,7 +110,7 @@ const TermsOfServicePage = () => {
                   <div>
                     <h3 className="font-semibold text-foreground mb-2">User Submissions</h3>
                     <p>
-                      By submitting any content (news tips, comments, feedback) to Sach Talk, you grant us a worldwide, royalty-free, perpetual license to use, modify, publish, and distribute such content.
+                      By submitting any content (news tips, comments, feedback) to SACH TALKS, you grant us a worldwide, royalty-free, perpetual license to use, modify, publish, and distribute such content.
                     </p>
                   </div>
                 </div>
@@ -172,7 +172,7 @@ const TermsOfServicePage = () => {
               <div className="bg-card p-6 rounded-xl border border-border mb-8">
                 <h2 className="font-display text-2xl font-bold text-foreground mb-4">Indemnification</h2>
                 <p className="text-muted-foreground">
-                  You agree to indemnify, defend, and hold harmless Sach Talk, its officers, directors, employees, agents, and affiliates from any claims, damages, losses, liabilities, and expenses (including legal fees) arising from your use of the Site, violation of these Terms, or infringement of any third-party rights.
+                  You agree to indemnify, defend, and hold harmless SACH TALKS, its officers, directors, employees, agents, and affiliates from any claims, damages, losses, liabilities, and expenses (including legal fees) arising from your use of the Site, violation of these Terms, or infringement of any third-party rights.
                 </p>
               </div>
 

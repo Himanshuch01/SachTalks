@@ -7,8 +7,8 @@ const DisclaimerPage = () => {
   return (
     <>
       <Helmet>
-        <title>Disclaimer - Sach Talk | Important Notices</title>
-        <meta name="description" content="Read Sach Talk's disclaimer regarding content accuracy, opinions, and liability limitations." />
+        <title>Disclaimer - SACH TALKS | Important Notices</title>
+        <meta name="description" content="Read SACH TALKS's disclaimer regarding content accuracy, opinions, and liability limitations." />
       </Helmet>
 
       <Header />
@@ -25,7 +25,7 @@ const DisclaimerPage = () => {
               Disclaimer
             </h1>
             <p className="text-lg md:text-xl text-primary-foreground/80 max-w-3xl mx-auto">
-              Important notices regarding the content and services provided by Sach Talk.
+              Important notices regarding the content and services provided by SACH TALKS.
             </p>
             <p className="text-sm text-primary-foreground/60 mt-4">
               Last Updated: December 2024
@@ -45,7 +45,7 @@ const DisclaimerPage = () => {
                 </div>
                 <div className="space-y-3 text-muted-foreground">
                   <p>
-                    The information provided on Sach Talk website and YouTube channel is for general informational and educational purposes only. While we strive to provide accurate and up-to-date information, we make no representations or warranties of any kind, express or implied, about the completeness, accuracy, reliability, suitability, or availability of the information, products, services, or related graphics contained on the Site.
+                    The information provided on SACH TALKS website and YouTube channel is for general informational and educational purposes only. While we strive to provide accurate and up-to-date information, we make no representations or warranties of any kind, express or implied, about the completeness, accuracy, reliability, suitability, or availability of the information, products, services, or related graphics contained on the Site.
                   </p>
                   <p>
                     Any reliance you place on such information is strictly at your own risk. We shall not be liable for any loss or damage arising from your use of the information provided.
@@ -63,13 +63,13 @@ const DisclaimerPage = () => {
                   <div>
                     <h3 className="font-semibold text-foreground mb-2">Accuracy of Information</h3>
                     <p>
-                      While Sach Talk strives to verify all news stories and information before publication, we cannot guarantee the absolute accuracy of every piece of content. News situations can evolve rapidly, and information may change after publication.
+                      While SACH TALKS strives to verify all news stories and information before publication, we cannot guarantee the absolute accuracy of every piece of content. News situations can evolve rapidly, and information may change after publication.
                     </p>
                   </div>
                   <div>
                     <h3 className="font-semibold text-foreground mb-2">Editorial Independence</h3>
                     <p>
-                      Sach Talk maintains editorial independence and is not influenced by any political party, government body, or commercial entity. Our reporting is based on our journalistic judgment and commitment to truth.
+                      SACH TALKS maintains editorial independence and is not influenced by any political party, government body, or commercial entity. Our reporting is based on our journalistic judgment and commitment to truth.
                     </p>
                   </div>
                   <div>
@@ -86,10 +86,10 @@ const DisclaimerPage = () => {
                 <h2 className="font-display text-2xl font-bold text-foreground mb-4">Opinions & Views</h2>
                 <div className="space-y-3 text-muted-foreground">
                   <p>
-                    <strong>Personal Opinions:</strong> Some content on our platform, including video commentaries, opinion pieces, and analysis, represents the personal views and opinions of the respective authors or presenters. These opinions do not necessarily reflect the official position of Sach Talk as an organization.
+                    <strong>Personal Opinions:</strong> Some content on our platform, including video commentaries, opinion pieces, and analysis, represents the personal views and opinions of the respective authors or presenters. These opinions do not necessarily reflect the official position of SACH TALKS as an organization.
                   </p>
                   <p>
-                    <strong>Guest Content:</strong> Views expressed by guests, interviewees, or contributors in our videos and articles are their own and do not represent endorsement by Sach Talk.
+                    <strong>Guest Content:</strong> Views expressed by guests, interviewees, or contributors in our videos and articles are their own and do not represent endorsement by SACH TALKS.
                   </p>
                   <p>
                     <strong>Viewer Discretion:</strong> We encourage viewers and readers to exercise their own judgment and critical thinking when consuming our content, and to seek multiple sources of information on important matters.
@@ -105,7 +105,7 @@ const DisclaimerPage = () => {
                 </div>
                 <div className="space-y-3 text-muted-foreground">
                   <p>
-                    Any financial, economic, or investment-related content provided on Sach Talk is for informational purposes only and should NOT be construed as:
+                    Any financial, economic, or investment-related content provided on SACH TALKS is for informational purposes only and should NOT be construed as:
                   </p>
                   <ul className="list-disc pl-6 space-y-2">
                     <li>Financial advice or investment recommendations</li>
@@ -127,7 +127,7 @@ const DisclaimerPage = () => {
                 </div>
                 <div className="space-y-3 text-muted-foreground">
                   <p>
-                    Our website and content may contain links to external websites that are not provided or maintained by Sach Talk. We do not guarantee the accuracy, relevance, timeliness, or completeness of any information on these external websites.
+                    Our website and content may contain links to external websites that are not provided or maintained by SACH TALKS. We do not guarantee the accuracy, relevance, timeliness, or completeness of any information on these external websites.
                   </p>
                   <p>
                     The inclusion of any links does not necessarily imply a recommendation or endorsement of the views expressed within them. We have no control over the nature, content, and availability of those sites.
@@ -146,7 +146,7 @@ const DisclaimerPage = () => {
                     Images, videos, and graphics used on our platform may include:
                   </p>
                   <ul className="list-disc pl-6 space-y-2">
-                    <li>Original content created by Sach Talk</li>
+                    <li>Original content created by SACH TALKS</li>
                     <li>Licensed stock images and videos</li>
                     <li>Images used under fair use for news reporting and commentary</li>
                     <li>User-submitted content</li>
@@ -162,7 +162,7 @@ const DisclaimerPage = () => {
                 <h2 className="font-display text-2xl font-bold text-foreground mb-4">No Professional Advice</h2>
                 <div className="space-y-3 text-muted-foreground">
                   <p>
-                    The content on Sach Talk should not be construed as professional advice in any field, including but not limited to:
+                    The content on SACH TALKS should not be construed as professional advice in any field, including but not limited to:
                   </p>
                   <ul className="list-disc pl-6 space-y-2">
                     <li>Legal advice</li>

@@ -128,7 +128,7 @@ const Footer = () => {
       <div className="border-t border-primary-foreground/10">
         <div className="container-wide mx-auto px-4 py-6 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-primary-foreground/50 text-sm">
-            © {new Date().getFullYear()} Sach Talk. All rights reserved.
+            © {new Date().getFullYear()} SACH TALKS. All rights reserved.
           </p>
           <div className="flex gap-6 text-sm">
             <Link to="/privacy-policy" className="text-primary-foreground/50 hover:text-primary transition-colors">

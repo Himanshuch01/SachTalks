@@ -13,6 +13,23 @@ interface Video {
   date: string;
 }
 
+// Shape of the server-side YouTube API response used on both
+// the homepage and the dedicated Videos page.
+interface ApiVideo {
+  videoId: string;
+  title: string;
+  description: string;
+  thumbnail: string;
+  publishedAt: string;
+  duration?: string; // ISO 8601 duration (optional)
+  viewCount?: string; // raw view count as string (optional)
+}
+
+interface ApiResponse {
+  videos?: ApiVideo[];
+  error?: string;
+}
+
 const YouTubeSection = () => {
   const [videos, setVideos] = useState<Video[]>([]);
   const [featuredVideoId, setFeaturedVideoId] = useState<string | null>(null);
@@ -28,133 +45,47 @@ const YouTubeSection = () => {
       setLoading(true);
       setError(null);
 
-      // Try Supabase function first, fallback to direct API
-      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-      const supabaseAnonKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
-      
-      if (supabaseUrl) {
-        try {
-          const headers: HeadersInit = {
-            'Content-Type': 'application/json',
-          };
-          
-          if (supabaseAnonKey) {
-            headers['apikey'] = supabaseAnonKey;
-          }
-          
-          const response = await fetch(
-            `${supabaseUrl}/functions/v1/youtube-videos?maxResults=6`,
-            { headers }
-          );
-          
-          if (response.ok) {
-            const data = await response.json();
-            if (data.videos && data.videos.length > 0) {
-              setVideos(data.videos);
-              setFeaturedVideoId(data.videos[0]?.id ?? null);
-              setLoading(false);
-              return;
-            }
-          } else {
-            const errorData = await response.json().catch(() => ({}));
-            console.log("Supabase function error:", errorData);
-          }
-        } catch (err) {
-          console.log("Supabase function failed, trying direct API:", err);
-        }
+      // Reuse the same backend route as the Videos page.
+      const res = await fetch("/api/youtube");
+
+      const contentType = res.headers.get("content-type") || "";
+      const isJson = contentType.toLowerCase().includes("application/json");
+
+      if (!isJson) {
+        const text = await res.text().catch(() => "");
+        console.error("Non-JSON response from /api/youtube (homepage):", text);
+        throw new Error("Failed to load homepage videos from server.");
       }
 
-      // Fallback to direct YouTube API
-      const apiKey = import.meta.env.VITE_YOUTUBE_API_KEY as string | undefined;
-      const channelId = "UCQTJfE6cW4s3qVGg9UJiK5g";
-
-      if (!apiKey) {
-        throw new Error("YouTube API key not configured");
+      if (!res.ok) {
+        const data = (await res.json().catch(() => null)) as ApiResponse | null;
+        const message =
+          data?.error ??
+          `Failed to load homepage videos (HTTP ${res.status}).`;
+        throw new Error(message);
       }
 
-      // Get uploads playlist from channel - try by ID first, then by handle
-      let channelData: any = null;
-      let uploadsPlaylistId: string | null = null;
+      const data = (await res.json()) as ApiResponse;
 
-      // Try fetching by channel ID
-      const channelResById = await fetch(
-        `https://www.googleapis.com/youtube/v3/channels?part=contentDetails&id=${channelId}&key=${apiKey}`
-      );
-      channelData = await channelResById.json();
-
-      if (channelData.error) {
-        console.error("YouTube API error:", channelData.error);
-        throw new Error(channelData.error.message || "Failed to fetch channel details");
+      if (data.error) {
+        throw new Error(data.error);
       }
 
-      // If channel not found by ID, try by handle
-      if (!channelData.items || channelData.items.length === 0) {
-        console.log("Channel not found by ID, trying by handle...");
-        const channelHandle = "SachTalksOfficial"; // Without @
-        const channelResByHandle = await fetch(
-          `https://www.googleapis.com/youtube/v3/channels?part=contentDetails&forHandle=${channelHandle}&key=${apiKey}`
-        );
-        channelData = await channelResByHandle.json();
+      const apiVideos = (data.videos ?? []).slice(0, 6);
 
-        if (channelData.error) {
-          console.error("YouTube API error (by handle):", channelData.error);
-          throw new Error(channelData.error.message || "Failed to fetch channel details");
-        }
-      }
-
-      if (!channelData.items || channelData.items.length === 0) {
-        console.error("Channel data:", channelData);
-        throw new Error("Channel not found. Please check the channel ID or handle.");
-      }
-
-      uploadsPlaylistId =
-        channelData.items[0]?.contentDetails?.relatedPlaylists?.uploads;
-
-      if (!uploadsPlaylistId) {
-        console.error("Channel data structure:", channelData.items[0]);
-        throw new Error("Channel uploads playlist not found. The channel may not have any videos.");
-      }
-
-      console.log("Found uploads playlist ID:", uploadsPlaylistId);
-
-      const videosRes = await fetch(
-        `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet,contentDetails&playlistId=${uploadsPlaylistId}&maxResults=6&key=${apiKey}`
-      );
-      const videosData = await videosRes.json();
-
-      if (videosData.error) {
-        throw new Error(videosData.error.message || "Failed to fetch videos from YouTube API");
-      }
-
-      if (!videosData.items || videosData.items.length === 0) {
+      if (!apiVideos.length) {
         setVideos([]);
-        setLoading(false);
+        setFeaturedVideoId(null);
         return;
       }
 
-      const videoIds = videosData.items
-        .map((item: any) => item.contentDetails.videoId)
-        .join(",");
+      const mapped: Video[] = apiVideos.map((video) => {
+        const isoDuration = video.duration ?? "PT0S";
 
-      const statsRes = await fetch(
-        `https://www.googleapis.com/youtube/v3/videos?part=statistics,contentDetails&id=${videoIds}&key=${apiKey}`
-      );
-      const statsData = await statsRes.json();
-
-      if (statsData.error) {
-        console.warn("Failed to fetch video statistics:", statsData.error);
-      }
-
-      const mapped: Video[] = videosData.items.map((item: any) => {
-        const stats = statsData.items?.find(
-          (s: any) => s.id === item.contentDetails.videoId
-        );
-        const duration = stats?.contentDetails?.duration || "PT0S";
-
-        const match = duration.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
-        const hours = parseInt(match?.[1] || "0");
-        const minutes = parseInt(match?.[2] || "0");
-        const seconds = parseInt(match?.[3] || "0");
+        const match = isoDuration.match(/PT(?:(\\d+)H)?(?:(\\d+)M)?(?:(\\d+)S)?/);
+        const hours = parseInt(match?.[1] || "0", 10);
+        const minutes = parseInt(match?.[2] || "0", 10);
+        const seconds = parseInt(match?.[3] || "0", 10);
         const formattedDuration =
           hours > 0
             ? `${hours}:${minutes.toString().padStart(2, "0")}:${seconds
@@ -162,17 +93,18 @@ const YouTubeSection = () => {
                 .padStart(2, "0")}`
             : `${minutes}:${seconds.toString().padStart(2, "0")}`;
 
-        const viewCount = parseInt(stats?.statistics?.viewCount || "0");
+        const rawViewCount = video.viewCount ?? "0";
+        const viewCount = parseInt(rawViewCount, 10) || 0;
         const formattedViews =
-          viewCount >= 1000000
-            ? `${(viewCount / 1000000).toFixed(1)}M`
-            : viewCount >= 1000
-            ? `${(viewCount / 1000).toFixed(0)}K`
+          viewCount >= 1_000_000
+            ? `${(viewCount / 1_000_000).toFixed(1)}M`
+            : viewCount >= 1_000
+            ? `${(viewCount / 1_000).toFixed(0)}K`
             : viewCount.toString();
 
-        const publishedAt = new Date(item.snippet.publishedAt);
+        const publishedAtDate = new Date(video.publishedAt);
         const now = new Date();
-        const diffTime = Math.abs(now.getTime() - publishedAt.getTime());
+        const diffTime = Math.abs(now.getTime() - publishedAtDate.getTime());
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
         let formattedDate = "";
         if (diffDays < 1) formattedDate = "Today";
@@ -185,12 +117,9 @@ const YouTubeSection = () => {
         else formattedDate = `${Math.floor(diffDays / 365)} years ago`;
 
         return {
-          id: item.contentDetails.videoId,
-          title: item.snippet.title,
-          thumbnail:
-            item.snippet.thumbnails.maxres?.url ||
-            item.snippet.thumbnails.high?.url ||
-            item.snippet.thumbnails.medium?.url,
+          id: video.videoId,
+          title: video.title,
+          thumbnail: video.thumbnail,
           views: formattedViews,
           duration: formattedDuration,
           date: formattedDate,
@@ -201,12 +130,13 @@ const YouTubeSection = () => {
       setFeaturedVideoId(mapped[0]?.id ?? null);
     } catch (err) {
       console.error("Error fetching videos:", err);
-      // If API fails, we'll show the playlist embed as fallback
-      // Don't set error state, just show empty videos array
-      // The playlist embed will still work without API
       setVideos([]);
       setFeaturedVideoId(null);
-      setError(null); // Clear error so playlist embed can show
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Failed to load videos. Please try again later."
+      );
     } finally {
       setLoading(false);
     }
@@ -219,7 +149,7 @@ const YouTubeSection = () => {
           <div>
             <span className="news-badge mb-4">Latest Videos</span>
             <h2 className="font-display text-4xl md:text-5xl font-bold text-foreground mt-4">
-              Watch <span className="text-primary">Sach Talk</span>
+              Watch <span className="text-primary">SACH TALKS</span>
             </h2>
             <p className="text-muted-foreground mt-2 max-w-lg">
               Stay informed with our latest news coverage, analysis, and exclusive interviews.
@@ -247,7 +177,7 @@ const YouTubeSection = () => {
             ) : featuredVideoId ? (
               <iframe
                 src={`https://www.youtube.com/embed/${featuredVideoId}`}
-                title="Sach Talk Latest Video"
+                title="SACH TALKS Latest Video"
                 className="w-full h-full"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
@@ -349,7 +279,7 @@ const YouTubeSection = () => {
               Never Miss an Update
             </h3>
             <p className="text-primary-foreground/70 mb-6">
-              Subscribe to Sach Talk for daily news and analysis
+              Subscribe to SACH TALKS for daily news and analysis
             </p>
             <a
               href="https://www.youtube.com/@SachTalksOfficial?sub_confirmation=1"

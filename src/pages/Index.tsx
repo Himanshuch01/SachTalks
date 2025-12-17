@@ -10,16 +10,16 @@ const Index = () => {
   return (
     <>
       <Helmet>
-        <title>Sach Talk - सच बोलो, सच सुनो | Hindi News Channel</title>
+        <title>SACH TALKS - सच बोलो, सच सुनो | Hindi News Channel</title>
         <meta
           name="description"
-          content="Sach Talk is your trusted source for unbiased Hindi news, analysis, and investigative journalism. Watch our latest videos and read articles on politics, economy, and current affairs."
+          content="SACH TALKS is your trusted source for unbiased Hindi news, analysis, and investigative journalism. Watch our latest videos and read articles on politics, economy, and current affairs."
         />
         <meta
           name="keywords"
-          content="Sach Talk, Hindi news, Indian news, politics, current affairs, investigative journalism, truth, सच टॉक"
+          content="SACH TALKS, Hindi news, Indian news, politics, current affairs, investigative journalism, truth, सच टॉक"
         />
-        <meta property="og:title" content="Sach Talk - Hindi News Channel" />
+        <meta property="og:title" content="SACH TALKS - Hindi News Channel" />
         <meta
           property="og:description"
           content="Your trusted source for unbiased news and analysis. सच बोलो, सच सुनो।"
