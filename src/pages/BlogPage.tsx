@@ -60,6 +60,14 @@ const BlogPage = () => {
 
   const categories = [...new Set(blogs.map((blog) => blog.category).filter(Boolean))] as string[];
 
+  const getImageSrc = (blog: Blog): string | null => {
+    if (blog.image_url) return blog.image_url;
+    if (blog.image_data && blog.image_mime) {
+      return `data:${blog.image_mime};base64,${blog.image_data}`;
+    }
+    return null;
+  };
+
   return (
     <>
       <Helmet>
@@ -166,9 +174,9 @@ const BlogPage = () => {
                   <Link key={blog.id} to={`/blog/${blog.slug}`}>
                     <Card className="overflow-hidden border-border hover:border-primary/50 transition-all duration-300 hover:shadow-lg group h-full">
                       <div className="relative aspect-video overflow-hidden bg-muted">
-                        {blog.image_url ? (
+                        {getImageSrc(blog) ? (
                           <img
-                            src={blog.image_url}
+                            src={getImageSrc(blog)!}
                             alt={blog.title}
                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                           />

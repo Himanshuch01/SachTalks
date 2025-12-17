@@ -8,6 +8,9 @@ export interface Blog {
   excerpt?: string | null;
   content: string;
   image_url?: string | null;
+  // Optional inline image data (when admin uploads directly)
+  image_data?: string | null;
+  image_mime?: string | null;
   category?: string | null;
   published: boolean;
   // Soft-delete flag so removed blogs stay out of the site

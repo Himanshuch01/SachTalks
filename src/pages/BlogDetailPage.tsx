@@ -28,6 +28,14 @@ const BlogDetailPage = () => {
     setLoading(false);
   };
 
+  const getImageSrc = (blog: Blog): string | null => {
+    if (blog.image_url) return blog.image_url;
+    if (blog.image_data && blog.image_mime) {
+      return `data:${blog.image_mime};base64,${blog.image_data}`;
+    }
+    return null;
+  };
+
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-IN", {
       day: "numeric",
@@ -110,7 +118,7 @@ const BlogDetailPage = () => {
         <meta name="description" content={blog.excerpt || blog.title} />
         <meta property="og:title" content={blog.title} />
         <meta property="og:description" content={blog.excerpt || blog.title} />
-        {blog.image_url && <meta property="og:image" content={blog.image_url} />}
+        {getImageSrc(blog) && <meta property="og:image" content={getImageSrc(blog)!} />}
       </Helmet>
 
       <Header />
@@ -160,10 +168,10 @@ const BlogDetailPage = () => {
           </header>
 
           {/* Featured Image */}
-          {blog.image_url && (
+          {getImageSrc(blog) && (
             <div className="max-w-4xl mb-10">
               <img
-                src={blog.image_url}
+                src={getImageSrc(blog)!}
                 alt={blog.title}
                 className="w-full rounded-xl shadow-lg"
               />

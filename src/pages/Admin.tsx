@@ -30,6 +30,8 @@ const Admin = () => {
     excerpt: "",
     content: "",
     image_url: "",
+    image_data: "",
+    image_mime: "",
     category: "",
     published: false,
   });
@@ -121,6 +123,8 @@ const Admin = () => {
       excerpt: "",
       content: "",
       image_url: "",
+      image_data: "",
+      image_mime: "",
       category: "",
       published: false,
     });
@@ -136,10 +140,48 @@ const Admin = () => {
       excerpt: blog.excerpt || "",
       content: blog.content,
       image_url: blog.image_url || "",
+      image_data: blog.image_data || "",
+      image_mime: blog.image_mime || "",
       category: blog.category || "",
       published: blog.published,
     });
     setIsCreating(true);
+  };
+
+  const handleImageFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      toast({
+        title: "Invalid file",
+        description: "Please upload an image file (JPEG, PNG, etc.).",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const maxSize = 2 * 1024 * 1024; // 2MB
+    if (file.size > maxSize) {
+      toast({
+        title: "Image too large",
+        description: "Please upload an image smaller than 2MB.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const result = reader.result as string;
+      const base64 = result.includes(",") ? result.split(",")[1] : result;
+      setFormData((prev) => ({
+        ...prev,
+        image_data: base64,
+        image_mime: file.type,
+      }));
+    };
+    reader.readAsDataURL(file);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -162,6 +204,8 @@ const Admin = () => {
           excerpt: formData.excerpt || null,
           content: formData.content,
           image_url: formData.image_url || null,
+          image_data: formData.image_data || null,
+          image_mime: formData.image_mime || null,
           category: formData.category || null,
           published: formData.published,
         });
@@ -186,6 +230,8 @@ const Admin = () => {
           excerpt: formData.excerpt || null,
           content: formData.content,
           image_url: formData.image_url || null,
+          image_data: formData.image_data || null,
+          image_mime: formData.image_mime || null,
           category: formData.category || null,
           published: formData.published,
         });
@@ -209,15 +255,15 @@ const Admin = () => {
     if (!confirm("Are you sure you want to delete this blog?")) return;
 
     try {
-      // Soft-delete: mark as unpublished and deleted so it disappears
-      // from the website and from published lists, while keeping data in DB.
-      await updateBlog(id, { published: false, deleted: true });
+      // Hard delete from MongoDB so the blog is completely removed
+      // and can no longer appear anywhere on the website.
+      await deleteBlog(id);
       toast({
         title: "Success",
         description: "Blog removed from website successfully",
       });
-      // Refresh the list so status updates in the admin panel
-      fetchBlogs();
+      // Update local state so the Admin list updates immediately
+      setBlogs((prev) => prev.filter((blog) => blog.id !== id));
     } catch (error) {
       toast({
         title: "Error",
@@ -338,7 +384,7 @@ const Admin = () => {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="image_url">Image URL</Label>
+                    <Label htmlFor="image_url">Image URL (optional)</Label>
                     <Input
                       id="image_url"
                       value={formData.image_url}
@@ -347,6 +393,18 @@ const Admin = () => {
                       }
                       placeholder="https://..."
                     />
+                    <div className="space-y-1 pt-1">
+                      <Label htmlFor="image_file">Or upload image</Label>
+                      <Input
+                        id="image_file"
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageFileChange}
+                      />
+                      <p className="text-xs text-muted-foreground">
+                        Max size 2MB. If both URL and file are provided, the URL will be used.
+                      </p>
+                    </div>
                   </div>
                 </div>
 

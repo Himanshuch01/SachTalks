@@ -64,6 +64,14 @@ const BlogSection = () => {
 
   const displayBlogs = blogs.length > 0 ? blogs : placeholderBlogs;
 
+  const getImageSrc = (blog: Blog): string | null => {
+    if (blog.image_url) return blog.image_url;
+    if (blog.image_data && blog.image_mime) {
+      return `data:${blog.image_mime};base64,${blog.image_data}`;
+    }
+    return null;
+  };
+
   return (
     <section id="blogs" className="section-padding bg-muted/50">
       <div className="container-wide mx-auto">
@@ -108,11 +116,19 @@ const BlogSection = () => {
                   style={{ animationDelay: `${index * 0.1}s` }}
                 >
                   <div className="relative aspect-video overflow-hidden bg-gradient-dark">
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <span className="font-display text-4xl font-bold text-primary-foreground/20">
-                        {blog.title.charAt(0)}
-                      </span>
-                    </div>
+                    {getImageSrc(blog) ? (
+                      <img
+                        src={getImageSrc(blog)!}
+                        alt={blog.title}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <span className="font-display text-4xl font-bold text-primary-foreground/20">
+                          {blog.title.charAt(0)}
+                        </span>
+                      </div>
+                    )}
                     {blog.category && (
                       <div className="absolute top-4 left-4">
                         <span className="news-badge">{blog.category}</span>
