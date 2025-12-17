@@ -34,7 +34,7 @@ const HeroSection = () => {
 
           {/* Main Heading */}
           <h1 className="font-display text-5xl md:text-7xl lg:text-8xl font-bold text-primary-foreground mb-6 animate-slide-up">
-            SACH <span className="text-primary">TALK</span>
+            SACH <span className="text-primary">TALKS</span>
           </h1>
 
           {/* Subheading */}

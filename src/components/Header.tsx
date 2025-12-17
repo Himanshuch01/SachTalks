@@ -31,7 +31,7 @@ const Header = () => {
             </div>
             <div className="flex flex-col">
               <span className="font-display font-bold text-foreground text-xl md:text-2xl tracking-tight">
-                SACH TALK
+                SACH TALKS
               </span>
               <span className="text-[10px] md:text-xs text-muted-foreground uppercase tracking-widest">
                 Truth First

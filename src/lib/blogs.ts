@@ -10,6 +10,8 @@ export interface Blog {
   image_url?: string | null;
   category?: string | null;
   published: boolean;
+  // Soft-delete flag so removed blogs stay out of the site
+  deleted?: boolean;
   createdAt?: string;
   created_at?: string;
 }
@@ -35,7 +37,12 @@ export async function getPublishedBlogs(limit?: number): Promise<Blog[]> {
     options.limit = limit;
   }
 
-  const docs = await mongodb.find<Blog>(COLLECTION, { published: true }, options);
+  // Only show blogs that are published and not soft-deleted
+  const docs = await mongodb.find<Blog>(
+    COLLECTION,
+    { published: true, deleted: { $ne: true } },
+    options
+  );
   return docs.map(mapBlog);
 }
 
@@ -45,7 +52,11 @@ export async function getAllBlogs(): Promise<Blog[]> {
 }
 
 export async function getBlogBySlug(slug: string): Promise<Blog | null> {
-  const doc = await mongodb.findOne<Blog>(COLLECTION, { slug, published: true });
+  const doc = await mongodb.findOne<Blog>(COLLECTION, {
+    slug,
+    published: true,
+    deleted: { $ne: true },
+  });
   return doc ? mapBlog(doc) : null;
 }
 

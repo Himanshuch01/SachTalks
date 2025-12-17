@@ -209,9 +209,9 @@ const Admin = () => {
     if (!confirm("Are you sure you want to delete this blog?")) return;
 
     try {
-      // Instead of hard-deleting from the database (which is currently unreliable),
-      // mark the blog as unpublished so it no longer appears on the website.
-      await updateBlog(id, { published: false });
+      // Soft-delete: mark as unpublished and deleted so it disappears
+      // from the website and from published lists, while keeping data in DB.
+      await updateBlog(id, { published: false, deleted: true });
       toast({
         title: "Success",
         description: "Blog removed from website successfully",
