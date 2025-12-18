@@ -198,6 +198,7 @@ const Admin = () => {
 
     if (editingBlog) {
       try {
+        // Wait for update to complete
         await updateBlog(editingBlog.id!, {
           title: formData.title,
           slug: formData.slug,
@@ -209,22 +210,49 @@ const Admin = () => {
           category: formData.category || null,
           published: formData.published,
         });
+        
+        // Update local state immediately for responsive UI
+        setBlogs((prev) =>
+          prev.map((blog) =>
+            blog.id === editingBlog.id
+              ? {
+                  ...blog,
+                  title: formData.title,
+                  slug: formData.slug,
+                  excerpt: formData.excerpt || null,
+                  content: formData.content,
+                  image_url: formData.image_url || null,
+                  image_data: formData.image_data || null,
+                  image_mime: formData.image_mime || null,
+                  category: formData.category || null,
+                  published: formData.published,
+                }
+              : blog
+          )
+        );
+        
         toast({
           title: "Success",
-          description: "Blog updated successfully",
+          description: formData.published
+            ? "Blog published successfully"
+            : "Blog saved as draft",
         });
         resetForm();
-        fetchBlogs();
+        
+        // Refresh from server to ensure consistency
+        await fetchBlogs();
       } catch (error) {
+        console.error("Error updating blog:", error);
         toast({
           title: "Error",
-          description: "Failed to update blog",
+          description: error instanceof Error ? error.message : "Failed to update blog",
           variant: "destructive",
         });
       }
     } else {
       try {
-        await createBlog({
+        // Wait for create to complete
+        const newBlog = await createBlog({
           title: formData.title,
           slug: formData.slug,
           excerpt: formData.excerpt || null,
@@ -235,16 +263,25 @@ const Admin = () => {
           category: formData.category || null,
           published: formData.published,
         });
+        
+        // Add new blog to local state immediately
+        setBlogs((prev) => [newBlog, ...prev]);
+        
         toast({
           title: "Success",
-          description: "Blog created successfully",
+          description: formData.published
+            ? "Blog published successfully"
+            : "Blog saved as draft",
         });
         resetForm();
-        fetchBlogs();
+        
+        // Refresh from server to ensure consistency
+        await fetchBlogs();
       } catch (error) {
+        console.error("Error creating blog:", error);
         toast({
           title: "Error",
-          description: "Failed to create blog",
+          description: error instanceof Error ? error.message : "Failed to create blog",
           variant: "destructive",
         });
       }
@@ -252,22 +289,38 @@ const Admin = () => {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this blog?")) return;
+    if (!confirm("Are you sure you want to delete this blog? This action cannot be undone.")) return;
+
+    // Optimistically remove from UI for immediate feedback
+    const blogToDelete = blogs.find((blog) => blog.id === id);
+    setBlogs((prev) => prev.filter((blog) => blog.id !== id));
 
     try {
       // Hard delete from MongoDB so the blog is completely removed
       // and can no longer appear anywhere on the website.
       await deleteBlog(id);
+      
       toast({
         title: "Success",
-        description: "Blog removed from website successfully",
+        description: "Blog deleted permanently",
       });
-      // Update local state so the Admin list updates immediately
-      setBlogs((prev) => prev.filter((blog) => blog.id !== id));
+      
+      // Refresh from server to ensure consistency
+      await fetchBlogs();
     } catch (error) {
+      // Restore the blog if delete failed
+      if (blogToDelete) {
+        setBlogs((prev) => [...prev, blogToDelete].sort((a, b) => {
+          const dateA = new Date(a.created_at || 0).getTime();
+          const dateB = new Date(b.created_at || 0).getTime();
+          return dateB - dateA;
+        }));
+      }
+      
+      console.error("Error deleting blog:", error);
       toast({
         title: "Error",
-        description: "Failed to remove blog",
+        description: error instanceof Error ? error.message : "Failed to delete blog",
         variant: "destructive",
       });
     }

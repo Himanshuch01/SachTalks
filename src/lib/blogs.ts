@@ -77,17 +77,50 @@ export async function createBlog(data: BlogInput): Promise<Blog> {
 }
 
 export async function updateBlog(id: string, data: Partial<Blog>): Promise<void> {
-  await mongodb.updateOne(
+  // Ensure published field is explicitly set if provided
+  const updateData: Record<string, unknown> = { ...data };
+  
+  // Explicitly handle published field to ensure it's set correctly
+  if (data.published !== undefined) {
+    updateData.published = data.published;
+  }
+  
+  // Remove id/_id from update data as it shouldn't be updated
+  delete updateData.id;
+  delete updateData._id;
+  
+  const result = await mongodb.updateOne(
     COLLECTION,
     { _id: { $oid: id } },
-    {
-      ...data,
-    }
+    updateData
   );
+  
+  // Verify the update succeeded (MongoDB updateOne returns { acknowledged, modifiedCount, matchedCount })
+  if (result && typeof result === 'object') {
+    const updateResult = result as { modifiedCount?: number; matchedCount?: number; acknowledged?: boolean };
+    // Check if the document was matched (exists)
+    if (updateResult.matchedCount === 0) {
+      throw new Error(`Blog with id ${id} was not found`);
+    }
+    // Note: modifiedCount can be 0 if the update didn't change any fields (same values)
+    // This is acceptable, so we don't throw an error for modifiedCount === 0
+  }
 }
 
 export async function deleteBlog(id: string): Promise<void> {
-  await mongodb.deleteOne(COLLECTION, { _id: { $oid: id } });
+  const result = await mongodb.deleteOne(COLLECTION, { _id: { $oid: id } });
+  
+  // Verify the delete succeeded (MongoDB deleteOne returns { acknowledged, deletedCount })
+  if (result && typeof result === 'object') {
+    const deleteResult = result as { deletedCount?: number; acknowledged?: boolean };
+    if (deleteResult.deletedCount === 0) {
+      throw new Error(`Blog with id ${id} was not found or already deleted`);
+    }
+    // If acknowledged is false, the operation didn't complete
+    if (deleteResult.acknowledged === false) {
+      throw new Error(`Delete operation was not acknowledged by MongoDB`);
+    }
+  }
 }
 
 
