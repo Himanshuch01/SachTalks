@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { toast } from "@/hooks/use-toast";
-import { Plus, Edit, Trash2, LogOut, ArrowLeft, Save } from "lucide-react";
+import { Plus, Edit, Trash2, LogOut, ArrowLeft, Save, Mail, MessageSquare, CheckCircle, Circle } from "lucide-react";
 import {
   type Blog,
   getAllBlogs,
@@ -15,12 +15,25 @@ import {
   updateBlog,
   deleteBlog,
 } from "@/lib/blogs";
+import {
+  type ContactSubmission,
+  getAllContactSubmissions,
+  markAsRead,
+  markAsUnread,
+  deleteContactSubmission,
+  getUnreadCount,
+} from "@/lib/contacts";
+
+type AdminView = "blogs" | "messages";
 
 const Admin = () => {
   const navigate = useNavigate();
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [currentView, setCurrentView] = useState<AdminView>("blogs");
   const [blogs, setBlogs] = useState<Blog[]>([]);
+  const [messages, setMessages] = useState<ContactSubmission[]>([]);
+  const [unreadCount, setUnreadCount] = useState(0);
   const [editingBlog, setEditingBlog] = useState<Blog | null>(null);
   const [isCreating, setIsCreating] = useState(false);
 
@@ -42,10 +55,12 @@ const Admin = () => {
     setLoading(false);
   }, []);
 
-  // Load blogs when admin is authenticated
+  // Load blogs and messages when admin is authenticated
   useEffect(() => {
     if (isAdmin) {
       fetchBlogs();
+      fetchMessages();
+      fetchUnreadCount();
     }
   }, [isAdmin]);
 
@@ -91,6 +106,24 @@ const Admin = () => {
       setBlogs(data);
     } catch (error) {
       console.error("Error fetching blogs from MongoDB:", error);
+    }
+  };
+
+  const fetchMessages = async () => {
+    try {
+      const data = await getAllContactSubmissions();
+      setMessages(data);
+    } catch (error) {
+      console.error("Error fetching messages from MongoDB:", error);
+    }
+  };
+
+  const fetchUnreadCount = async () => {
+    try {
+      const count = await getUnreadCount();
+      setUnreadCount(count);
+    } catch (error) {
+      console.error("Error fetching unread count:", error);
     }
   };
 
@@ -408,7 +441,182 @@ const Admin = () => {
       </header>
 
       <main className="container-wide mx-auto px-4 py-8">
-        {isCreating ? (
+        {/* Tabs for Blogs and Messages */}
+        <div className="flex gap-2 mb-6 border-b border-border">
+          <Button
+            variant={currentView === "blogs" ? "default" : "ghost"}
+            onClick={() => {
+              setCurrentView("blogs");
+              setIsCreating(false);
+            }}
+            className="rounded-b-none"
+          >
+            <Edit className="w-4 h-4 mr-2" />
+            Blogs
+          </Button>
+          <Button
+            variant={currentView === "messages" ? "default" : "ghost"}
+            onClick={() => {
+              setCurrentView("messages");
+              setIsCreating(false);
+              fetchMessages();
+              fetchUnreadCount();
+            }}
+            className="rounded-b-none relative"
+          >
+            <MessageSquare className="w-4 h-4 mr-2" />
+            Messages
+            {unreadCount > 0 && (
+              <span className="ml-2 px-2 py-0.5 bg-red-500 text-white text-xs rounded-full">
+                {unreadCount}
+              </span>
+            )}
+          </Button>
+        </div>
+
+        {currentView === "messages" && (
+          /* Messages Section */
+          <div>
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="font-display text-2xl font-bold">Contact Messages</h2>
+              <Button onClick={() => { fetchMessages(); fetchUnreadCount(); }} variant="outline" size="sm">
+                Refresh
+              </Button>
+            </div>
+
+            {messages.length === 0 ? (
+              <Card>
+                <CardContent className="py-12 text-center">
+                  <Mail className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+                  <p className="text-muted-foreground mb-4">
+                    No messages yet.
+                  </p>
+                </CardContent>
+              </Card>
+            ) : (
+              <div className="space-y-4">
+                {messages.map((message) => (
+                  <Card key={message.id} className={message.read ? "bg-card" : "bg-primary/5 border-primary/20"}>
+                    <CardContent className="p-6">
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-2">
+                            <h3 className="font-semibold text-foreground">{message.name}</h3>
+                            {!message.read && (
+                              <span className="px-2 py-0.5 bg-primary text-primary-foreground text-xs rounded-full">
+                                New
+                              </span>
+                            )}
+                          </div>
+                          <div className="space-y-1 text-sm text-muted-foreground mb-4">
+                            <p><strong>Email:</strong> {message.email}</p>
+                            <p><strong>Mobile:</strong> {message.mobile}</p>
+                            {message.address && <p><strong>Address:</strong> {message.address}</p>}
+                            <p><strong>Date:</strong> {new Date(message.created_at || message.createdAt || Date.now()).toLocaleString()}</p>
+                          </div>
+                          <div className="mt-4 p-4 bg-muted rounded-lg">
+                            <p className="text-sm font-medium text-foreground mb-2">Message:</p>
+                            <p className="text-sm text-muted-foreground whitespace-pre-wrap">{message.message}</p>
+                          </div>
+                        </div>
+                        <div className="flex flex-col gap-2">
+                          {message.read ? (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={async () => {
+                                if (!message.id) return;
+                                try {
+                                  await markAsUnread(message.id);
+                                  await fetchMessages();
+                                  await fetchUnreadCount();
+                                  toast({
+                                    title: "Success",
+                                    description: "Message marked as unread",
+                                  });
+                                } catch (error) {
+                                  toast({
+                                    title: "Error",
+                                    description: error instanceof Error ? error.message : "Failed to update message",
+                                    variant: "destructive",
+                                  });
+                                }
+                              }}
+                            >
+                              <Circle className="w-4 h-4" />
+                            </Button>
+                          ) : (
+                            <Button
+                              variant="default"
+                              size="sm"
+                              onClick={async () => {
+                                if (!message.id) return;
+                                try {
+                                  await markAsRead(message.id);
+                                  await fetchMessages();
+                                  await fetchUnreadCount();
+                                  toast({
+                                    title: "Success",
+                                    description: "Message marked as read",
+                                  });
+                                } catch (error) {
+                                  toast({
+                                    title: "Error",
+                                    description: error instanceof Error ? error.message : "Failed to update message",
+                                    variant: "destructive",
+                                  });
+                                }
+                              }}
+                            >
+                              <CheckCircle className="w-4 h-4" />
+                            </Button>
+                          )}
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="text-destructive"
+                            onClick={async () => {
+                              if (!message.id) return;
+                              if (!confirm("Are you sure you want to delete this message?")) return;
+                              
+                              const messageToDelete = message;
+                              setMessages((prev) => prev.filter((m) => m.id !== message.id));
+                              
+                              try {
+                                await deleteContactSubmission(message.id);
+                                toast({
+                                  title: "Success",
+                                  description: "Message deleted",
+                                });
+                                await fetchMessages();
+                                await fetchUnreadCount();
+                              } catch (error) {
+                                setMessages((prev) => [...prev, messageToDelete].sort((a, b) => {
+                                  const dateA = new Date(a.created_at || 0).getTime();
+                                  const dateB = new Date(b.created_at || 0).getTime();
+                                  return dateB - dateA;
+                                }));
+                                toast({
+                                  title: "Error",
+                                  description: error instanceof Error ? error.message : "Failed to delete message",
+                                  variant: "destructive",
+                                });
+                              }
+                            }}
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {currentView === "blogs" && isCreating && (
           /* Blog Form */
           <Card>
             <CardHeader>
@@ -529,7 +737,9 @@ const Admin = () => {
               </form>
             </CardContent>
           </Card>
-        ) : (
+        )}
+
+        {currentView === "blogs" && !isCreating && (
           /* Blog List */
           <div>
             <div className="flex justify-between items-center mb-6">

@@ -8,22 +8,22 @@ const teamMembers = [
   {
     name: "Er. Manish Kasyap",
     role: "Founder",
-    image: "/public/manishKashyap.jpg",
+    image: "/manishKashyap.jpg",
     description: "Er. Manish Kasyap is the visionary behind SACH TALKS. With over 15 years of experience in journalism, he founded SACH TALKS with a mission to deliver unbiased, factual news to the masses. His dedication to truth and transparency has made SACH TALKS a trusted name in Hindi news media.",
     quote: "Truth is the foundation of democracy.",
   },
   {
     name: "CA Mani Dwivedi",
     role: "Co-Founder",
-    image: "/public/caMani.jpg",
+    image: "/caMani.jpg",
     description: "CA Mani Dwivedi is the co-founder of SACH TALKS. With over 10 years of experience in accounting and finance, he brings his expertise in financial management and strategic planning to SACH TALKS. His dedication to accuracy and transparency has made SACH TALKS a trusted name in Hindi news media.",
     quote: "Empowering people with information.",
   },
   {
     name: "Karan kasyap",
     role: "Managing director",
-    image: "/public/karanKasyap.jpg",
-    description: "Rajesh Verma manages the day-to-day operations of SACH TALKS. With his extensive background in media production and team management, he ensures smooth functioning of all departments and timely delivery of news content.",
+    image: "/karanKasyap.jpg",
+    description: "Karan kasyap manages the day-to-day operations of SACH TALKS. With his extensive background in media production and team management, he ensures smooth functioning of all departments and timely delivery of news content.",
     quote: "Excellence in every story we tell.",
   },
 ];

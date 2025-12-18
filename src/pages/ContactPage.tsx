@@ -33,12 +33,12 @@ const contactInfo = [
   {
     icon: Phone,
     title: "Phone Number",
-    details: ["+91 XXXXX XXXXX", "+91 XXXXX XXXXX"],
+    details: ["+919709997093"],
   },
   {
     icon: Mail,
     title: "Email Address",
-    details: ["contact@sachtalk.com", "news@sachtalk.com"],
+    details: ["sachtak@gmail.com"],
   },
   {
     icon: Clock,
@@ -74,12 +74,30 @@ const ContactPage = () => {
     try {
       const validatedData = contactSchema.parse(formData);
       
-      // Here you would typically send the data to your backend
-      console.log("Form submitted:", validatedData);
+      // Send data to backend API
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: validatedData.name,
+          mobile: validatedData.mobile,
+          email: validatedData.email,
+          address: validatedData.address || null,
+          message: validatedData.problem,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok || !result.success) {
+        throw new Error(result.error || "Failed to send message");
+      }
       
       toast({
         title: "Message Sent!",
-        description: "Thank you for contacting us. We'll get back to you soon.",
+        description: result.message || "Thank you for contacting us. We'll get back to you soon.",
       });
 
       // Reset form
@@ -100,6 +118,12 @@ const ContactPage = () => {
           }
         });
         setErrors(newErrors);
+      } else {
+        toast({
+          title: "Error",
+          description: error instanceof Error ? error.message : "Failed to send message. Please try again.",
+          variant: "destructive",
+        });
       }
     } finally {
       setIsSubmitting(false);
