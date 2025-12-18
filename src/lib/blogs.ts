@@ -21,12 +21,45 @@ export interface Blog {
 
 const COLLECTION = "blogs";
 
+/**
+ * Extracts the ID from a MongoDB document in various formats
+ */
+function extractId(doc: any): string | undefined {
+  // If id already exists, use it
+  if (doc.id) {
+    return String(doc.id);
+  }
+  
+  // Handle _id in various formats
+  if (doc._id) {
+    if (typeof doc._id === 'string') {
+      return doc._id;
+    } else if (doc._id.$oid) {
+      // BSON extended JSON format: { $oid: "..." }
+      return String(doc._id.$oid);
+    } else if (typeof doc._id.toString === 'function') {
+      // ObjectId object: call toString()
+      return doc._id.toString();
+    } else {
+      // Fallback: try to stringify
+      return String(doc._id);
+    }
+  }
+  
+  return undefined;
+}
+
 function mapBlog(doc: any): Blog {
   const createdAt = doc.created_at || doc.createdAt || new Date().toISOString();
+  const id = extractId(doc);
+
+  if (!id) {
+    console.warn("Blog document missing ID:", doc);
+  }
 
   return {
     ...doc,
-    id: doc._id?.$oid || doc.id,
+    id: id,
     created_at: createdAt,
   };
 }

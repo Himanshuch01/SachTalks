@@ -197,9 +197,18 @@ const Admin = () => {
     }
 
     if (editingBlog) {
+      if (!editingBlog.id) {
+        toast({
+          title: "Error",
+          description: "Blog ID is missing. Please refresh the page and try again.",
+          variant: "destructive",
+        });
+        return;
+      }
+
       try {
         // Wait for update to complete
-        await updateBlog(editingBlog.id!, {
+        await updateBlog(editingBlog.id, {
           title: formData.title,
           slug: formData.slug,
           excerpt: formData.excerpt || null,
@@ -288,7 +297,16 @@ const Admin = () => {
     }
   };
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (id: string | undefined) => {
+    if (!id) {
+      toast({
+        title: "Error",
+        description: "Blog ID is missing. Please refresh the page and try again.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     if (!confirm("Are you sure you want to delete this blog? This action cannot be undone.")) return;
 
     // Optimistically remove from UI for immediate feedback
@@ -536,47 +554,55 @@ const Admin = () => {
               </Card>
             ) : (
               <div className="space-y-4">
-                {blogs.map((blog) => (
-                  <Card key={blog.id}>
-                    <CardContent className="py-4 flex items-center justify-between">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-1">
-                          <h3 className="font-semibold">{blog.title}</h3>
-                          {blog.published ? (
-                            <span className="text-xs px-2 py-0.5 bg-green-100 text-green-700 rounded">
-                              Published
-                            </span>
-                          ) : (
-                            <span className="text-xs px-2 py-0.5 bg-yellow-100 text-yellow-700 rounded">
-                              Draft
-                            </span>
-                          )}
+                {blogs.map((blog) => {
+                  // Skip blogs without valid IDs (shouldn't happen, but defensive)
+                  if (!blog.id) {
+                    console.warn("Blog missing ID, skipping:", blog);
+                    return null;
+                  }
+
+                  return (
+                    <Card key={blog.id}>
+                      <CardContent className="py-4 flex items-center justify-between">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-1">
+                            <h3 className="font-semibold">{blog.title}</h3>
+                            {blog.published ? (
+                              <span className="text-xs px-2 py-0.5 bg-green-100 text-green-700 rounded">
+                                Published
+                              </span>
+                            ) : (
+                              <span className="text-xs px-2 py-0.5 bg-yellow-100 text-yellow-700 rounded">
+                                Draft
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-sm text-muted-foreground">
+                            {blog.category && `${blog.category} • `}
+                            {new Date(blog.created_at || blog.createdAt || Date.now()).toLocaleDateString()}
+                          </p>
                         </div>
-                        <p className="text-sm text-muted-foreground">
-                          {blog.category && `${blog.category} • `}
-                          {new Date(blog.created_at).toLocaleDateString()}
-                        </p>
-                      </div>
-                      <div className="flex gap-2">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleEdit(blog)}
-                        >
-                          <Edit className="w-4 h-4" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="text-destructive"
-                          onClick={() => handleDelete(blog.id)}
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
+                        <div className="flex gap-2">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleEdit(blog)}
+                          >
+                            <Edit className="w-4 h-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="text-destructive"
+                            onClick={() => handleDelete(blog.id)}
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  );
+                })}
               </div>
             )}
           </div>
