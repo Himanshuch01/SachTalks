@@ -119,6 +119,7 @@ const Footer = () => {
                   Patna,Bihar,India
                 </span>
               </li>
+              
             </ul>
           </div>
         </div>

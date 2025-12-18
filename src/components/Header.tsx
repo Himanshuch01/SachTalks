@@ -26,9 +26,11 @@ const Header = () => {
         <div className="flex items-center justify-between h-16 md:h-20">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-red rounded-sm flex items-center justify-center shadow-md group-hover:shadow-glow transition-shadow duration-300">
-              <span className="font-display font-bold text-primary-foreground text-lg md:text-xl">S</span>
-            </div>
+            <img
+              src="/sachtalks.jpg"
+              alt="SACH TALKS logo"
+              className="w-10 h-10 md:w-12 md:h-12 rounded-sm shadow-md group-hover:shadow-glow transition-shadow duration-300 object-cover"
+            />
             <div className="flex flex-col">
               <span className="font-display font-bold text-foreground text-xl md:text-2xl tracking-tight">
                 SACH TALKS
@@ -68,11 +70,11 @@ const Header = () => {
                 Subscribe
               </Button>
             </a>
-            <Link to="/admin">
+            {/* <Link to="/admin">
               <Button variant="ghost" size="sm">
                 Admin
               </Button>
-            </Link>
+            </Link> */}
           </div>
 
           {/* Mobile Menu Button */}

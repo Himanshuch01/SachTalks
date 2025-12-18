@@ -3,9 +3,9 @@ import { Button } from "@/components/ui/button";
 
 const HeroSection = () => {
   const stats = [
-    { icon: Users, value: "500K+", label: "Subscribers" },
-    { icon: Video, value: "1000+", label: "Videos" },
-    { icon: TrendingUp, value: "10M+", label: "Views" },
+    { icon: Users, value: "2440K+", label: "Subscribers" },
+    { icon: Video, value: "14K+", label: "Videos" },
+    { icon: TrendingUp, value: "670M+", label: "Views" },
   ];
 
   return (

@@ -178,15 +178,15 @@ const AboutPage = () => {
           <div className="container-wide mx-auto">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
               <div>
-                <div className="font-display text-4xl md:text-5xl font-bold mb-2">500K+</div>
+                <div className="font-display text-4xl md:text-5xl font-bold mb-2">2440K+</div>
                 <p className="text-primary-foreground/70">YouTube Subscribers</p>
               </div>
               <div>
-                <div className="font-display text-4xl md:text-5xl font-bold mb-2">1000+</div>
+                <div className="font-display text-4xl md:text-5xl font-bold mb-2">14K+</div>
                 <p className="text-primary-foreground/70">Videos Published</p>
               </div>
               <div>
-                <div className="font-display text-4xl md:text-5xl font-bold mb-2">50M+</div>
+                <div className="font-display text-4xl md:text-5xl font-bold mb-2">670M+</div>
                 <p className="text-primary-foreground/70">Total Views</p>
               </div>
               <div>
@@ -235,7 +235,7 @@ const AboutPage = () => {
                   {
                     year: "2023",
                     title: "National Recognition",
-                    description: "Reached 500K subscribers and became one of the most trusted Hindi news sources.",
+                    description: "Reached 2440K subscribers and became one of the most trusted Hindi news sources.",
                     icon: Award,
                   },
                   {
