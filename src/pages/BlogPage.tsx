@@ -9,6 +9,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Calendar, User, ArrowRight, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { getPublishedBlogs, type Blog } from "@/lib/blogs";
+import { getCanonicalUrl, DEFAULT_IMAGE } from "@/lib/seo";
 
 const BlogPage = () => {
   const [blogs, setBlogs] = useState<Blog[]>([]);
@@ -71,8 +72,25 @@ const BlogPage = () => {
   return (
     <>
       <Helmet>
+        <html lang="hi" />
         <title>Blog - SACH TALKS | Latest News Articles & Analysis</title>
-        <meta name="description" content="Read the latest news articles, analysis, and opinion pieces from SACH TALKS. Stay informed with in-depth coverage on politics, economy, and more." />
+        <meta name="description" content="Read the latest news articles, analysis, and opinion pieces from SACH TALKS. Stay informed with in-depth coverage on politics, economy, and current affairs in Hindi." />
+        <meta name="keywords" content="Hindi news articles, Indian news analysis, politics news, economy news, current affairs, SACH TALKS blog, हिंदी समाचार" />
+        <link rel="canonical" href={getCanonicalUrl("/blog")} />
+        
+        {/* Open Graph */}
+        <meta property="og:title" content="Blog - SACH TALKS | Latest News Articles & Analysis" />
+        <meta property="og:description" content="Read the latest news articles, analysis, and opinion pieces from SACH TALKS. Stay informed with in-depth coverage on politics, economy, and current affairs." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={getCanonicalUrl("/blog")} />
+        <meta property="og:image" content={DEFAULT_IMAGE} />
+        <meta property="og:locale" content="hi_IN" />
+        
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Blog - SACH TALKS | Latest News Articles & Analysis" />
+        <meta name="twitter:description" content="Read the latest news articles, analysis, and opinion pieces from SACH TALKS." />
+        <meta name="twitter:image" content={DEFAULT_IMAGE} />
       </Helmet>
 
       <Header />

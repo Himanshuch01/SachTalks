@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { getPageTitle, getCanonicalUrl, DEFAULT_IMAGE } from "@/lib/seo";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -159,8 +160,25 @@ const VideosPage = () => {
   return (
     <>
       <Helmet>
-        <title>Videos - SACH TALKS | Latest News Videos</title>
-        <meta name="description" content="Watch the latest news videos, interviews, and analysis from SACH TALKS. Subscribe to our YouTube channel for daily updates." />
+        <html lang="hi" />
+        <title>{getPageTitle("Videos - SACH TALKS | Latest News Videos")}</title>
+        <meta name="description" content="Watch the latest news videos, interviews, and analysis from SACH TALKS. Subscribe to our YouTube channel for daily updates on politics, economy, and current affairs." />
+        <meta name="keywords" content="Hindi news videos, YouTube videos, news analysis, interviews, SACH TALKS videos, current affairs videos" />
+        <link rel="canonical" href={getCanonicalUrl("/videos")} />
+        
+        {/* Open Graph */}
+        <meta property="og:title" content="Videos - SACH TALKS | Latest News Videos" />
+        <meta property="og:description" content="Watch the latest news videos, interviews, and analysis from SACH TALKS. Subscribe to our YouTube channel for daily updates." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={getCanonicalUrl("/videos")} />
+        <meta property="og:image" content={DEFAULT_IMAGE} />
+        <meta property="og:locale" content="hi_IN" />
+        
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Videos - SACH TALKS | Latest News Videos" />
+        <meta name="twitter:description" content="Watch the latest news videos, interviews, and analysis from SACH TALKS." />
+        <meta name="twitter:image" content={DEFAULT_IMAGE} />
       </Helmet>
 
       <Header />

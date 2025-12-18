@@ -2,13 +2,30 @@ import { Helmet } from "react-helmet-async";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Shield, Lock, Eye, Database, UserCheck, Bell } from "lucide-react";
+import { getPageTitle, getCanonicalUrl, DEFAULT_IMAGE } from "@/lib/seo";
 
 const PrivacyPolicyPage = () => {
   return (
     <>
       <Helmet>
-        <title>Privacy Policy - SACH TALKS | Your Data Protection</title>
-        <meta name="description" content="Read SACH TALKS's privacy policy to understand how we collect, use, and protect your personal information." />
+        <html lang="hi" />
+        <title>{getPageTitle("Privacy Policy - SACH TALKS | Your Data Protection")}</title>
+        <meta name="description" content="Read SACH TALKS's privacy policy to understand how we collect, use, and protect your personal information. We are committed to protecting your privacy and ensuring data security." />
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href={getCanonicalUrl("/privacy-policy")} />
+        
+        {/* Open Graph */}
+        <meta property="og:title" content="Privacy Policy - SACH TALKS | Your Data Protection" />
+        <meta property="og:description" content="Read SACH TALKS's privacy policy to understand how we collect, use, and protect your personal information." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={getCanonicalUrl("/privacy-policy")} />
+        <meta property="og:image" content={DEFAULT_IMAGE} />
+        <meta property="og:locale" content="hi_IN" />
+        
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content="Privacy Policy - SACH TALKS" />
+        <meta name="twitter:description" content="Read SACH TALKS's privacy policy to understand how we protect your personal information." />
       </Helmet>
 
       <Header />

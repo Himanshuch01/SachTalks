@@ -4,9 +4,9 @@ import { Link } from "react-router-dom";
 const Footer = () => {
   const socialLinks = [
     { icon: Youtube, href: "https://www.youtube.com/@SachTalksOfficial", label: "YouTube" },
-    { icon: Twitter, href: "#", label: "Twitter" },
-    { icon: Facebook, href: "#", label: "Facebook" },
-    { icon: Instagram, href: "#", label: "Instagram" },
+    { icon: Twitter, href: "https://x.com/SachTalks", label: "Twitter" },
+    { icon: Facebook, href: "https://www.facebook.com/SachTalksofficial/", label: "Facebook" },
+    { icon: Instagram, href: "https://www.instagram.com/sachtalksofficial/", label: "Instagram" },
   ];
 
   const quickLinks = [
@@ -110,13 +110,13 @@ const Footer = () => {
               <li className="flex items-start gap-3">
                 <Phone className="w-5 h-5 text-primary mt-0.5" />
                 <span className="text-primary-foreground/70">
-                  +91 XXXXX XXXXX
+                  +919709997093
                 </span>
               </li>
               <li className="flex items-start gap-3">
                 <MapPin className="w-5 h-5 text-primary mt-0.5" />
                 <span className="text-primary-foreground/70">
-                  New Delhi, India
+                  Patna,Bihar,India
                 </span>
               </li>
             </ul>

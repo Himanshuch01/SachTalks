@@ -8,6 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Calendar, User, ArrowLeft, Share2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { getBlogBySlug, type Blog } from "@/lib/blogs";
+import { getPageTitle, getCanonicalUrl, generateArticleStructuredData, generateBreadcrumbStructuredData, DEFAULT_IMAGE } from "@/lib/seo";
 
 const BlogDetailPage = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -111,14 +112,58 @@ const BlogDetailPage = () => {
     );
   }
 
+  const blogUrl = getCanonicalUrl(`/blog/${blog.slug}`);
+  const blogImage = getImageSrc(blog) || DEFAULT_IMAGE;
+  const publishedTime = blog.created_at || blog.createdAt;
+  
+  const articleStructuredData = generateArticleStructuredData({
+    title: blog.title,
+    description: blog.excerpt || blog.title,
+    image: blogImage,
+    url: blogUrl,
+    publishedTime: publishedTime,
+    author: "SACH TALKS",
+  });
+
+  const breadcrumbStructuredData = generateBreadcrumbStructuredData([
+    { name: "Home", url: getCanonicalUrl("/") },
+    { name: "Blog", url: getCanonicalUrl("/blog") },
+    { name: blog.title, url: blogUrl },
+  ]);
+
   return (
     <>
       <Helmet>
-        <title>{blog.title} - SACH TALKS</title>
+        <html lang="hi" />
+        <title>{getPageTitle(`${blog.title} - SACH TALKS`)}</title>
         <meta name="description" content={blog.excerpt || blog.title} />
+        <meta name="keywords" content={`${blog.category || ""}, Hindi news, ${blog.title}, SACH TALKS`} />
+        <link rel="canonical" href={blogUrl} />
+        
+        {/* Open Graph */}
         <meta property="og:title" content={blog.title} />
         <meta property="og:description" content={blog.excerpt || blog.title} />
-        {getImageSrc(blog) && <meta property="og:image" content={getImageSrc(blog)!} />}
+        <meta property="og:type" content="article" />
+        <meta property="og:url" content={blogUrl} />
+        <meta property="og:image" content={blogImage} />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:locale" content="hi_IN" />
+        {publishedTime && <meta property="article:published_time" content={publishedTime} />}
+        {blog.category && <meta property="article:section" content={blog.category} />}
+        <meta property="article:author" content="SACH TALKS" />
+        
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={blog.title} />
+        <meta name="twitter:description" content={blog.excerpt || blog.title} />
+        <meta name="twitter:image" content={blogImage} />
+        <meta name="twitter:site" content="@SachTalks" />
+        
+        {/* Structured Data */}
+        <script type="application/ld+json">
+          {JSON.stringify([articleStructuredData, breadcrumbStructuredData])}
+        </script>
       </Helmet>
 
       <Header />

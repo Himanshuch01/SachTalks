@@ -2,13 +2,30 @@ import { Helmet } from "react-helmet-async";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { AlertCircle, Info, ExternalLink, TrendingUp, MessageSquare, Camera } from "lucide-react";
+import { getPageTitle, getCanonicalUrl, DEFAULT_IMAGE } from "@/lib/seo";
 
 const DisclaimerPage = () => {
   return (
     <>
       <Helmet>
-        <title>Disclaimer - SACH TALKS | Important Notices</title>
-        <meta name="description" content="Read SACH TALKS's disclaimer regarding content accuracy, opinions, and liability limitations." />
+        <html lang="hi" />
+        <title>{getPageTitle("Disclaimer - SACH TALKS | Important Notices")}</title>
+        <meta name="description" content="Read SACH TALKS's disclaimer regarding content accuracy, opinions, and liability limitations. Important notices regarding the content and services provided." />
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href={getCanonicalUrl("/disclaimer")} />
+        
+        {/* Open Graph */}
+        <meta property="og:title" content="Disclaimer - SACH TALKS | Important Notices" />
+        <meta property="og:description" content="Read SACH TALKS's disclaimer regarding content accuracy, opinions, and liability limitations." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={getCanonicalUrl("/disclaimer")} />
+        <meta property="og:image" content={DEFAULT_IMAGE} />
+        <meta property="og:locale" content="hi_IN" />
+        
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content="Disclaimer - SACH TALKS" />
+        <meta name="twitter:description" content="Read SACH TALKS's disclaimer regarding content accuracy and liability." />
       </Helmet>
 
       <Header />

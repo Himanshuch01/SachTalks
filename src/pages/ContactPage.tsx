@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Helmet } from "react-helmet-async";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { getPageTitle, getCanonicalUrl, DEFAULT_IMAGE } from "@/lib/seo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -108,8 +109,25 @@ const ContactPage = () => {
   return (
     <>
       <Helmet>
-        <title>Contact Us - SACH TALKS | Get in Touch</title>
-        <meta name="description" content="Contact SACH TALKS for news tips, feedback, or inquiries. Visit our office in Patna, Bihar or reach out through our contact form." />
+        <html lang="hi" />
+        <title>{getPageTitle("Contact Us - SACH TALKS | Get in Touch")}</title>
+        <meta name="description" content="Contact SACH TALKS for news tips, feedback, or inquiries. Visit our office in Patna, Bihar or reach out through our contact form. We value your input and story ideas." />
+        <meta name="keywords" content="contact SACH TALKS, news tips, feedback, Patna office, Hindi news contact" />
+        <link rel="canonical" href={getCanonicalUrl("/contact")} />
+        
+        {/* Open Graph */}
+        <meta property="og:title" content="Contact Us - SACH TALKS | Get in Touch" />
+        <meta property="og:description" content="Contact SACH TALKS for news tips, feedback, or inquiries. Visit our office in Patna, Bihar or reach out through our contact form." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={getCanonicalUrl("/contact")} />
+        <meta property="og:image" content={DEFAULT_IMAGE} />
+        <meta property="og:locale" content="hi_IN" />
+        
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Contact Us - SACH TALKS | Get in Touch" />
+        <meta name="twitter:description" content="Contact SACH TALKS for news tips, feedback, or inquiries." />
+        <meta name="twitter:image" content={DEFAULT_IMAGE} />
       </Helmet>
 
       <Header />
@@ -332,9 +350,9 @@ const ContactPage = () => {
             <div className="flex justify-center gap-4">
               {[
                 { name: "YouTube", href: "https://www.youtube.com/@SachTalksOfficial", color: "bg-red-600 hover:bg-red-700" },
-                { name: "Twitter", href: "#", color: "bg-blue-500 hover:bg-blue-600" },
-                { name: "Facebook", href: "#", color: "bg-blue-700 hover:bg-blue-800" },
-                { name: "Instagram", href: "#", color: "bg-pink-600 hover:bg-pink-700" },
+                { name: "Twitter", href: "https://x.com/SachTalks", color: "bg-blue-500 hover:bg-blue-600" },
+                { name: "Facebook", href: "https://www.facebook.com/SachTalksofficial/", color: "bg-blue-700 hover:bg-blue-800" },
+                { name: "Instagram", href: "https://www.instagram.com/sachtalksofficial/", color: "bg-pink-600 hover:bg-pink-700" },
               ].map((social, index) => (
                 <a
                   key={index}

@@ -2,13 +2,30 @@ import { Helmet } from "react-helmet-async";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { FileText, Scale, AlertTriangle, Copyright, Users, Gavel } from "lucide-react";
+import { getPageTitle, getCanonicalUrl, DEFAULT_IMAGE } from "@/lib/seo";
 
 const TermsOfServicePage = () => {
   return (
     <>
       <Helmet>
-        <title>Terms of Service - SACH TALKS | Usage Agreement</title>
-        <meta name="description" content="Read SACH TALKS's terms of service to understand the rules and guidelines for using our website and services." />
+        <html lang="hi" />
+        <title>{getPageTitle("Terms of Service - SACH TALKS | Usage Agreement")}</title>
+        <meta name="description" content="Read SACH TALKS's terms of service to understand the rules and guidelines for using our website and services. Please read these terms carefully before using our platform." />
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href={getCanonicalUrl("/terms-of-service")} />
+        
+        {/* Open Graph */}
+        <meta property="og:title" content="Terms of Service - SACH TALKS | Usage Agreement" />
+        <meta property="og:description" content="Read SACH TALKS's terms of service to understand the rules and guidelines for using our website and services." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={getCanonicalUrl("/terms-of-service")} />
+        <meta property="og:image" content={DEFAULT_IMAGE} />
+        <meta property="og:locale" content="hi_IN" />
+        
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content="Terms of Service - SACH TALKS" />
+        <meta name="twitter:description" content="Read SACH TALKS's terms of service to understand the rules for using our website." />
       </Helmet>
 
       <Header />

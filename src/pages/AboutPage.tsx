@@ -1,27 +1,28 @@
 import { Helmet } from "react-helmet-async";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { getPageTitle, getCanonicalUrl, DEFAULT_IMAGE } from "@/lib/seo";
 import { Users, Award, Target, Heart, Clock, Globe, Newspaper, Video, CheckCircle, Star } from "lucide-react";
 
 const teamMembers = [
   {
-    name: "Amit Kumar",
-    role: "Founder & Editor-in-Chief",
-    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face",
-    description: "Amit Kumar is the visionary behind SACH TALKS. With over 15 years of experience in journalism, he founded SACH TALKS with a mission to deliver unbiased, factual news to the masses. His dedication to truth and transparency has made SACH TALKS a trusted name in Hindi news media.",
+    name: "Er. Manish Kasyap",
+    role: "Founder",
+    image: "/public/manishKashyap.jpg",
+    description: "Er. Manish Kasyap is the visionary behind SACH TALKS. With over 15 years of experience in journalism, he founded SACH TALKS with a mission to deliver unbiased, factual news to the masses. His dedication to truth and transparency has made SACH TALKS a trusted name in Hindi news media.",
     quote: "Truth is the foundation of democracy.",
   },
   {
-    name: "Priya Sharma",
-    role: "Co-Founder & Managing Director",
-    image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop&crop=face",
-    description: "Priya Sharma brings her expertise in media management and digital strategy to SACH TALKS. She oversees the operational aspects of the organization and ensures that the team maintains the highest standards of journalistic integrity.",
+    name: "CA Mani Dwivedi",
+    role: "Co-Founder",
+    image: "/public/caMani.jpg",
+    description: "CA Mani Dwivedi is the co-founder of SACH TALKS. With over 10 years of experience in accounting and finance, he brings his expertise in financial management and strategic planning to SACH TALKS. His dedication to accuracy and transparency has made SACH TALKS a trusted name in Hindi news media.",
     quote: "Empowering people with information.",
   },
   {
-    name: "Rajesh Verma",
-    role: "General Manager & Head of Operations",
-    image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop&crop=face",
+    name: "Karan kasyap",
+    role: "Managing director",
+    image: "/public/karanKasyap.jpg",
     description: "Rajesh Verma manages the day-to-day operations of SACH TALKS. With his extensive background in media production and team management, he ensures smooth functioning of all departments and timely delivery of news content.",
     quote: "Excellence in every story we tell.",
   },
@@ -54,8 +55,25 @@ const AboutPage = () => {
   return (
     <>
       <Helmet>
-        <title>About Us - SACH TALKS | Truth First News</title>
-        <meta name="description" content="Learn about SACH TALKS, our mission, vision, and the team behind India's trusted Hindi news channel." />
+        <html lang="hi" />
+        <title>{getPageTitle("About Us - SACH TALKS | Truth First News")}</title>
+        <meta name="description" content="Learn about SACH TALKS, our mission, vision, and the team behind India's trusted Hindi news channel. Discover our commitment to unbiased journalism and truth-first reporting." />
+        <meta name="keywords" content="SACH TALKS about, Hindi news channel, journalism team, news organization, truth first, unbiased news" />
+        <link rel="canonical" href={getCanonicalUrl("/about")} />
+        
+        {/* Open Graph */}
+        <meta property="og:title" content="About Us - SACH TALKS | Truth First News" />
+        <meta property="og:description" content="Learn about SACH TALKS, our mission, vision, and the team behind India's trusted Hindi news channel." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={getCanonicalUrl("/about")} />
+        <meta property="og:image" content={DEFAULT_IMAGE} />
+        <meta property="og:locale" content="hi_IN" />
+        
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="About Us - SACH TALKS | Truth First News" />
+        <meta name="twitter:description" content="Learn about SACH TALKS, our mission, vision, and the team behind India's trusted Hindi news channel." />
+        <meta name="twitter:image" content={DEFAULT_IMAGE} />
       </Helmet>
 
       <Header />
