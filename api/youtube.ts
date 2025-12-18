@@ -38,12 +38,30 @@ interface YouTubePlaylistItemsResponse {
   };
 }
 
+interface YouTubeVideosListResponse {
+  items?: Array<{
+    id?: string;
+    statistics?: {
+      viewCount?: string;
+    };
+    contentDetails?: {
+      duration?: string;
+    };
+  }>;
+  error?: {
+    code?: number;
+    message?: string;
+  };
+}
+
 export interface YouTubeVideo {
   videoId: string;
   title: string;
   description: string;
   thumbnail: string;
   publishedAt: string;
+  viewCount?: string;
+  duration?: string;
 }
 
 interface SuccessResponse {
@@ -157,6 +175,51 @@ export default async function handler(req: any, res: any) {
       return res.status(200).json(body);
     }
 
+    // 3) Fetch video statistics and duration for all videos
+    const videoIds = items
+      .map((item) => item.contentDetails?.videoId)
+      .filter((id): id is string => !!id)
+      .join(",");
+
+    const videosUrl = new URL("https://www.googleapis.com/youtube/v3/videos");
+    videosUrl.searchParams.set("part", "statistics,contentDetails");
+    videosUrl.searchParams.set("id", videoIds);
+    videosUrl.searchParams.set("key", apiKey);
+
+    const videosRes = await fetch(videosUrl.toString());
+
+    if (!videosRes.ok) {
+      const body: ErrorResponse = {
+        error: `YouTube videos.list request failed with status ${videosRes.status}`,
+      };
+      return res.status(502).json(body);
+    }
+
+    const videosData = (await videosRes.json()) as YouTubeVideosListResponse;
+
+    if (videosData.error) {
+      const message =
+        videosData.error.message ??
+        "Unknown error from YouTube videos.list API.";
+      const body: ErrorResponse = { error: message };
+      return res.status(502).json(body);
+    }
+
+    // Create a map of videoId -> statistics/duration for quick lookup
+    const videoStatsMap = new Map<
+      string,
+      { viewCount?: string; duration?: string }
+    >();
+    videosData.items?.forEach((item) => {
+      if (item.id) {
+        videoStatsMap.set(item.id, {
+          viewCount: item.statistics?.viewCount,
+          duration: item.contentDetails?.duration,
+        });
+      }
+    });
+
+    // 4) Combine playlist data with statistics
     const videos: YouTubeVideo[] = items
       .map((item) => {
         const videoId = item.contentDetails?.videoId;
@@ -169,13 +232,18 @@ export default async function handler(req: any, res: any) {
           snippet.thumbnails?.medium?.url ||
           "";
 
-        return {
+        const stats = videoStatsMap.get(videoId);
+
+        const video: YouTubeVideo = {
           videoId,
           title: snippet.title ?? "Untitled video",
           description: snippet.description ?? "",
           thumbnail,
           publishedAt: snippet.publishedAt ?? new Date().toISOString(),
-        } satisfies YouTubeVideo;
+          viewCount: stats?.viewCount,
+          duration: stats?.duration,
+        };
+        return video;
       })
       .filter((v): v is YouTubeVideo => v !== null);
 
