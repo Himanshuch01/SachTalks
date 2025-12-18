@@ -29,7 +29,7 @@ const Header = () => {
             <img
               src="/sachtalks.jpg"
               alt="SACH TALKS logo"
-              className="w-10 h-10 md:w-12 md:h-12 rounded-sm shadow-md group-hover:shadow-glow transition-shadow duration-300 object-cover"
+              className="w-10 h-10 md:w-12 md:h-12 rounded-sm shadow-md group-hover:shadow-glow transition-shadow duration-300 object-contain bg-white"
             />
             <div className="flex flex-col">
               <span className="font-display font-bold text-foreground text-xl md:text-2xl tracking-tight">
