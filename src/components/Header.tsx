@@ -115,9 +115,9 @@ const Header = () => {
                 </Button>
               </a>
               <Link to="/admin">
-                <Button variant="outline" className="w-full">
+                {/* <Button variant="outline" className="w-full">
                   Admin Panel
-                </Button>
+                </Button> */}
               </Link>
             </div>
           </nav>
